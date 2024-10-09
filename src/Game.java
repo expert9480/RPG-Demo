@@ -1,15 +1,18 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage; 
-import java.awt.event.*; 
+import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
+import java.awt.event.*;
+import java.util.ArrayList;
 
 
 public class Game  extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener{
 
 	
 	private BufferedImage back; 
-	private int key, x, y; 
+	private int key, x, y;
+	private ArrayList<Characters> charList;
 
 
 
@@ -22,11 +25,19 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		key =-1; 
 		x=0;
 		y=0;
+		charList = setCharList();
+		
 		
 	
 	}
 
-	
+	public ArrayList<Characters> setCharList(){
+		ArrayList<Characters> temp = new ArrayList<Characters>();
+		temp.add(new Milam(100,100));
+		temp.add(new Aarav(200,200));
+		temp.add(new Holden(300,300));
+		return temp;
+	}
 	
 	public void run()
 	   {
