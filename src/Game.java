@@ -26,7 +26,7 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		x=0;
 		y=0;
 		charList = setCharList();
-		
+
 		
 	
 	}
