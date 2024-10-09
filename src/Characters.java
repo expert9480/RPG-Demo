@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.ImageIcon;
+import java.awt.*;
 
 public class Characters {
     private int x,y,w,h,speed,health,damage,stam,dx,dy;
@@ -31,6 +32,10 @@ public class Characters {
         pic=p;
         dx=0;
         dy=0;
+    }
+
+    public void drawChar(Graphics g2d){
+        g2d.drawImage(pic.getImage(),x,y,w,h,null);
     }
 
     public int getX() {

@@ -13,6 +13,8 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	private BufferedImage back; 
 	private int key, x, y;
 	private ArrayList<Characters> charList;
+	private String screen;
+	private Characters player;
 
 
 
@@ -26,6 +28,9 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		x=0;
 		y=0;
 		charList = setCharList();
+		screen = "start";
+		System.out.println(charList.get(0));
+
 
 		
 	
@@ -38,6 +43,25 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		temp.add(new Holden(300,300));
 		return temp;
 	}
+
+	public void drawScreens (Graphics g2d){
+		switch(screen){
+			case "start":
+				for(Characters c : charList){
+					System.out.println(c);
+				}
+				break;
+			case "selection":
+				drawSelectScreen(g2d);
+		}
+	}
+
+	public void drawSelectScreen(Graphics g2d){
+		player.drawChar(g2d);
+		g2d.drawString("You picked"+player.toString(),100,100);
+	}
+
+
 	
 	public void run()
 	   {
@@ -100,6 +124,11 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		
 		key= e.getKeyCode();
 		System.out.println(key);
+		if(key==32){
+			screen="selection";
+			player=charList.get(0);
+		}
+
 		
 		
 		
@@ -138,7 +167,7 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+		//check screen
 	}
 
 
