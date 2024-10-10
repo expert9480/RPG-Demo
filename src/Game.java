@@ -2,7 +2,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
 import java.awt.event.*;
 import java.util.ArrayList;
 
@@ -29,7 +28,6 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		y=0;
 		charList = setCharList();
 		screen = "start";
-		System.out.println(charList.get(0));
 
 
 		
@@ -38,27 +36,52 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 
 	public ArrayList<Characters> setCharList(){
 		ArrayList<Characters> temp = new ArrayList<Characters>();
-		temp.add(new Milam(100,100));
-		temp.add(new Aarav(200,200));
-		temp.add(new Holden(300,300));
+		temp.add(new Character1(100,100));
+		temp.add(new Character2(100,100));
+		temp.add(new Character3(100,100));
+		temp.add(new Character4(100,100));
 		return temp;
 	}
 
 	public void drawScreens (Graphics g2d){
 		switch(screen){
 			case "start":
-				for(Characters c : charList){
-					System.out.println(c);
-				}
-				break;
+				g2d.drawString("Press space to start",100,100);
+			break;
 			case "selection":
 				drawSelectScreen(g2d);
+			break;
+			case "charInfo":
+				drawCharInfo(g2d);
+			break;
 		}
 	}
 
 	public void drawSelectScreen(Graphics g2d){
-		player.drawChar(g2d);
-		g2d.drawString("You picked"+player.toString(),100,100);
+//		System.out.println(player);
+		g2d.drawString("Select your character",100,100);
+		for(int i=0; i<charList.size(); i++){
+			g2d.drawString((i+1)+": "+charList.get(i).getType(),100,200+(i*100));
+		}
+		//drawCharInfo(g2d);
+	}
+
+	public void drawCharInfo(Graphics g2d){
+		if (player != null) {
+			g2d.drawString("You picked"+player.getType(),100,100);
+			g2d.drawString("You picked"+player.getHealth(),100,150);
+			g2d.drawString("You picked"+player.getSpeed(),100,200);
+			g2d.drawString("You picked"+player.getDamage(),100,250);
+			g2d.drawString("You picked"+player.getStam(),100,300);
+			player.setX(200);
+			player.setY(350);
+			player.setW(200);
+			player.setH(200);
+			player.drawChar(g2d);
+		}
+		else {
+			g2d.drawString("No character selected", 100, 100);
+		}
 	}
 
 
@@ -77,29 +100,23 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	      {
 	      }
 	  	}
-	
 
-	
-	
-	
 	public void paint(Graphics g){
 		
 		Graphics2D twoDgraph = (Graphics2D) g; 
 		if( back ==null)
 			back=(BufferedImage)( (createImage(getWidth(), getHeight()))); 
-		
 
 		Graphics g2d = back.createGraphics();
-	
 		g2d.clearRect(0,0,getSize().width, getSize().height);
-	
-		g2d.setFont( new Font("Broadway", Font.BOLD, 50));
-		
-		g2d.drawString("Hello!" , x, y);
-		
-		
+		g2d.setFont( new Font("Broadway", Font.BOLD, 40));
+//		g2d.drawString("Hello!" , x, y);
+
+		drawScreens(g2d);
+
 	
 		twoDgraph.drawImage(back, null, 0, 0);
+
 
 	}
 
@@ -126,8 +143,24 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		System.out.println(key);
 		if(key==32){
 			screen="selection";
-			player=charList.get(0);
 		}
+		if (key==49){
+			player=charList.get(0);
+			screen="charInfo";
+		}
+		if (key==50){
+			player=charList.get(1);
+			screen="charInfo";
+		}
+		if (key==51){
+			player=charList.get(2);
+			screen="charInfo";
+		}
+		if (key==52){
+			player=charList.get(3);
+			screen="charInfo";
+		}
+
 
 		
 		

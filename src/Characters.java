@@ -5,6 +5,7 @@ import java.awt.*;
 public class Characters {
     private int x,y,w,h,speed,health,damage,stam,dx,dy;
     private ImageIcon pic;
+    private String type;
 
     public Characters(){
         x=0;
@@ -18,9 +19,10 @@ public class Characters {
         dx=0;
         dy=0;
         pic = new ImageIcon();
+        type = "";
     }
 
-    public Characters(int xV, int yV, int width, int height, int sp, int hea, int dam, int st, ImageIcon p){
+    public Characters(int xV, int yV, int width, int height, int sp, int hea, int dam, int st, ImageIcon p, String t){
         x=xV;
         y=yV;
         w=width;
@@ -32,6 +34,15 @@ public class Characters {
         pic=p;
         dx=0;
         dy=0;
+        type = t;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void drawChar(Graphics g2d){
