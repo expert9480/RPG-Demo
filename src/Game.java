@@ -54,6 +54,8 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 			case "charInfo":
 				drawCharInfo(g2d);
 			break;
+			case "game":
+				g2d.drawString("Game",100,100);
 		}
 	}
 
@@ -78,6 +80,8 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 			player.setW(200);
 			player.setH(200);
 			player.drawChar(g2d);
+			g2d.drawString("Press space to start",100,600);
+			g2d.drawString("Press esc to go back",100,650);
 		}
 		else {
 			g2d.drawString("No character selected", 100, 100);
@@ -141,25 +145,66 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		
 		key= e.getKeyCode();
 		System.out.println(key);
-		if(key==32){
+		if((key==32) && (screen == "start")){
 			screen="selection";
 		}
-		if (key==49){
+		if ((key==49 && (screen == "selection"))){
 			player=charList.get(0);
 			screen="charInfo";
 		}
-		if (key==50){
+		if ((key==50) && (screen == "selection")){
 			player=charList.get(1);
 			screen="charInfo";
 		}
-		if (key==51){
+		if ((key==51) && (screen == "selection")){
 			player=charList.get(2);
 			screen="charInfo";
 		}
-		if (key==52){
+		if ((key==52) && (screen == "selection")){
 			player=charList.get(3);
 			screen="charInfo";
 		}
+		if ((key==27) && (screen == "charInfo")){
+			screen = "selection";
+		}
+		if((key==32) && (screen == "charInfo")){
+			screen = "game";
+		}
+
+		// if (key == 87 && (screen == "game")) {
+		//     //-1
+		//     player.setDy(-1);
+		////     player.setPic(new ImageIcon("assets/farmer/walkUp.gif"));
+		//     player.getPic().getImage().flush();
+		// }
+		// if (key == 83 && (screen == "game")) {
+		//     player.setDy(1);
+		////     player.setPic(new ImageIcon("assets/farmer/walkDown.gif"));
+		//     player.getPic().getImage().flush();
+		// }
+		// if (key == 65 && (screen == "game")) {
+		//     //-1
+		//     player.setDx(-1);
+		////     player.setPic(new ImageIcon("assets/farmer/walkLeft.gif"));
+		//     player.getPic().getImage().flush();
+		// }
+		// if (key == 68 && (screen == "game")) {
+		//     player.setDx(1);
+		////     player.setPic(new ImageIcon("assets/farmer/walkRight.gif"));
+		//     player.getPic().getImage().flush();
+		// }
+
+		// //-1
+		// if ((sprint) && player.getDX() == -1 && (screen == "game")) {
+		//     player.setDx(-2*1);
+		//     //1
+		// } else if ((sprint) && player.getDX() == 1 && (screen == "game")) {
+		//     player.setDx(2*1);
+		// } else if ((sprint) && player.getDY() == -1 && (screen == "game")) {
+		//     player.setDy(-2*1);
+		// } else if ((sprint) && player.getDY() == 1 && (screen == "game")) {
+		//     player.setDy(2*1);
+		// }
 
 
 		
