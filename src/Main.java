@@ -8,7 +8,7 @@ public class Main extends JFrame{
 	
 	public Main () {
 		super("RPG Demo");
-		setSize(WIDTH, HEIGHT);
+		setSize(Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height);
 		Game play = new Game();
 		((Component) play).setFocusable(true);
 		

@@ -10,10 +10,12 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 
 	
 	private BufferedImage back; 
-	private int key, x, y;
+	private int key, x, y, typingIndex;
+	private double time;
 	private ArrayList<Characters> charList;
-	private String screen;
+	private String screen, typing;
 	private Characters player;
+
 
 
 
@@ -28,6 +30,8 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		y=0;
 		charList = setCharList();
 		screen = "start";
+		time = System.currentTimeMillis();
+		typing = "Hello!";
 
 
 		
@@ -46,10 +50,20 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	public void drawScreens (Graphics g2d){
 		switch(screen){
 			case "start":
-				g2d.drawString("Press space to start",100,100);
+
+				g2d.drawString("Press space to start",100,300);
 			break;
 			case "selection":
 				drawSelectScreen(g2d);
+
+				g2d.drawString(typing.substring(0,typingIndex),700,100);
+
+				if (typingIndex<typing.length()){
+					if (System.currentTimeMillis()-time>150){
+						time = System.currentTimeMillis();
+						typingIndex++;
+					}
+				}
 			break;
 			case "charInfo":
 				drawCharInfo(g2d);
@@ -166,6 +180,7 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		}
 		if ((key==27) && (screen == "charInfo")){
 			screen = "selection";
+			typingIndex=0;
 		}
 		if((key==32) && (screen == "charInfo")){
 			screen = "game";

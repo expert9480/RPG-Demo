@@ -37,6 +37,24 @@ public class Characters {
         type = t;
     }
 
+    public void move(int screenW, int screenH, int maxW, int maxH) {
+        //fix move method
+        x+=dx;
+        if (x+w>maxW) {
+            x=maxW-w;
+        }
+        else if (x<screenW){
+            x=screenW;
+        }
+
+        y+=dy;
+        //
+        if (y+h>maxH)
+            y=maxH-h;
+        else if (y<screenH-(h/2))
+            y=screenH-(h/2);
+    }
+
     public String getType() {
         return type;
     }
