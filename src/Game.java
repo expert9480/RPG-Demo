@@ -47,23 +47,34 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		return temp;
 	}
 
+//	public void typing(Graphics g2d, String s, int x, int y){
+//		g2d.drawString(s.substring(0,typingIndex),x,y);
+//		if (typingIndex<s.length()){
+//			if (System.currentTimeMillis()-time>150){
+//				time = System.currentTimeMillis();
+//				typingIndex++;
+//			}
+//		}
+//	}
+
 	public void drawScreens (Graphics g2d){
 		switch(screen){
 			case "start":
 
-				g2d.drawString("Press space to start",100,300);
-			break;
-			case "selection":
-				drawSelectScreen(g2d);
-
-				g2d.drawString(typing.substring(0,typingIndex),700,100);
-
-				if (typingIndex<typing.length()){
+				g2d.drawString("Juck".substring(0,typingIndex),100,100);
+				if (typingIndex<"Press Space to Start".length()){
 					if (System.currentTimeMillis()-time>150){
 						time = System.currentTimeMillis();
 						typingIndex++;
 					}
 				}
+				//typing(g2d,"Press Space to Start",100,100);
+				g2d.drawString("Press space to start",100,600);
+			break;
+			case "selection":
+				drawSelectScreen(g2d);
+
+
 			break;
 			case "charInfo":
 				drawCharInfo(g2d);
@@ -159,30 +170,34 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		
 		key= e.getKeyCode();
 		System.out.println(key);
-		if((key==32) && (screen == "start")){
+		if((key==32) && (screen.equals("start"))){
 			screen="selection";
 		}
-		if ((key==49 && (screen == "selection"))){
+		if ((key==49 && (screen.equals("selection")))){
 			player=charList.get(0);
 			screen="charInfo";
 		}
-		if ((key==50) && (screen == "selection")){
+		if ((key==50) && (screen.equals("selection"))){
 			player=charList.get(1);
 			screen="charInfo";
 		}
-		if ((key==51) && (screen == "selection")){
+		if ((key==51) && (screen.equals("selection"))){
 			player=charList.get(2);
 			screen="charInfo";
 		}
-		if ((key==52) && (screen == "selection")){
+		if ((key==52) && (screen.equals("selection"))){
 			player=charList.get(3);
 			screen="charInfo";
 		}
-		if ((key==27) && (screen == "charInfo")){
+		if ((key==27) && (screen.equals("charInfo"))){
 			screen = "selection";
 			typingIndex=0;
 		}
-		if((key==32) && (screen == "charInfo")){
+//		if ((key==27) && (screen.equals("selection"))){
+//			screen = "start";
+//			typingIndex=0;
+//		}
+		if((key==32) && (screen.equals("charInfo"))){
 			screen = "game";
 		}
 
