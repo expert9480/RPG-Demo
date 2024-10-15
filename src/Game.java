@@ -1,4 +1,3 @@
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -8,8 +7,8 @@ import java.util.ArrayList;
 
 public class Game  extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener{
 
-	
-	private BufferedImage back; 
+
+	private BufferedImage back;
 	private int key, x, y, typingIndex;
 	private double time;
 	private ArrayList<Characters> charList;
@@ -19,13 +18,13 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 
 
 
-	
+
 	public Game() {
-		new Thread(this).start();	
+		new Thread(this).start();
 		this.addKeyListener(this);
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
-		key =-1; 
+		key =-1;
 		x=0;
 		y=0;
 		charList = setCharList();
@@ -34,16 +33,16 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		typing = "Hello!";
 
 
-		
-	
+
+
 	}
 
 	public ArrayList<Characters> setCharList(){
 		ArrayList<Characters> temp = new ArrayList<Characters>();
-		temp.add(new Character1(100,100));
-		temp.add(new Character2(100,100));
-		temp.add(new Character3(100,100));
-		temp.add(new Character4(100,100));
+		temp.add(new Fighter(100,100));
+		temp.add(new Heavy(100,100));
+		temp.add(new Mage(100,100));
+		temp.add(new Scout(100,100));
 		return temp;
 	}
 
@@ -62,23 +61,27 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 			case "start":
 
 				g2d.drawString("Juck".substring(0,typingIndex),100,100);
-				if (typingIndex<"Press Space to Start".length()){
+				if (typingIndex<"Juck".length()){
 					if (System.currentTimeMillis()-time>150){
 						time = System.currentTimeMillis();
 						typingIndex++;
 					}
+				} else {
+					if (System.currentTimeMillis() - time > 1000) {
+						g2d.drawString("Press space to start", 100, 600);
+					}
 				}
 				//typing(g2d,"Press Space to Start",100,100);
-				g2d.drawString("Press space to start",100,600);
-			break;
+				//g2d.drawString("Press space to start",100,600);
+				break;
 			case "selection":
 				drawSelectScreen(g2d);
 
 
-			break;
+				break;
 			case "charInfo":
 				drawCharInfo(g2d);
-			break;
+				break;
 			case "game":
 				g2d.drawString("Game",100,100);
 		}
@@ -95,18 +98,18 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 
 	public void drawCharInfo(Graphics g2d){
 		if (player != null) {
-			g2d.drawString("You picked"+player.getType(),100,100);
-			g2d.drawString("You picked"+player.getHealth(),100,150);
-			g2d.drawString("You picked"+player.getSpeed(),100,200);
-			g2d.drawString("You picked"+player.getDamage(),100,250);
-			g2d.drawString("You picked"+player.getStam(),100,300);
+			g2d.drawString("You picked "+player.getType(),100,100);
+			g2d.drawString("Health: "+player.getHealth(),100,150);
+			g2d.drawString("Speed: "+player.getSpeed(),100,200);
+			g2d.drawString("Damage: "+player.getDamage(),100,250);
+			g2d.drawString("Stamina: "+player.getStam(),100,300);
 			player.setX(200);
 			player.setY(350);
 			player.setW(200);
 			player.setH(200);
 			player.drawChar(g2d);
-			g2d.drawString("Press space to start",100,600);
-			g2d.drawString("Press esc to go back",100,650);
+			g2d.drawString("Press space to start",100,700);
+			g2d.drawString("Press esc to go back",100,750);
 		}
 		else {
 			g2d.drawString("No character selected", 100, 100);
@@ -114,27 +117,27 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	}
 
 
-	
+
 	public void run()
-	   {
-	   	try
-	   	{
-	   		while(true)
-	   		{
-	   		   Thread.currentThread().sleep(5);
-	            repaint();
-	         }
-	      }
-	   		catch(Exception e)
-	      {
-	      }
-	  	}
+	{
+		try
+		{
+			while(true)
+			{
+				Thread.currentThread().sleep(5);
+				repaint();
+			}
+		}
+		catch(Exception e)
+		{
+		}
+	}
 
 	public void paint(Graphics g){
-		
-		Graphics2D twoDgraph = (Graphics2D) g; 
+
+		Graphics2D twoDgraph = (Graphics2D) g;
 		if( back ==null)
-			back=(BufferedImage)( (createImage(getWidth(), getHeight()))); 
+			back=(BufferedImage)( (createImage(getWidth(), getHeight())));
 
 		Graphics g2d = back.createGraphics();
 		g2d.clearRect(0,0,getSize().width, getSize().height);
@@ -143,13 +146,13 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 
 		drawScreens(g2d);
 
-	
+
 		twoDgraph.drawImage(back, null, 0, 0);
 
 
 	}
 
-	
+
 
 
 
@@ -157,17 +160,17 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 
 
-//DO NOT DELETE
+	//DO NOT DELETE
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 		key= e.getKeyCode();
 		System.out.println(key);
 		if((key==32) && (screen.equals("start"))){
@@ -237,20 +240,20 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		// }
 
 
-		
-		
-		
-	
+
+
+
+
 	}
 
 
 	//DO NOT DELETE
 	@Override
 	public void keyReleased(KeyEvent e) {
-		
-		
-		
-		
+
+
+
+
 	}
 
 
@@ -258,7 +261,7 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
@@ -299,11 +302,11 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 		System.out.println("you clicked at"+ arg0.getY());
 		x=arg0.getX();
 		y=arg0.getY();
-		
+
 	}
 
 
@@ -311,11 +314,11 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
-	}
-	
-	
-	
 
-	
+	}
+
+
+
+
+
 }

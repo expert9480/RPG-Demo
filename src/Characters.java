@@ -2,10 +2,12 @@ import javax.swing.*;
 import javax.swing.ImageIcon;
 import java.awt.*;
 
+
 public class Characters {
     private int x,y,w,h,speed,health,damage,stam,dx,dy;
     private ImageIcon pic;
     private String type;
+    private Weapons weapon;
 
     public Characters(){
         x=0;
@@ -37,6 +39,22 @@ public class Characters {
         type = t;
     }
 
+    public Characters(int xV, int yV, int width, int height, int sp, int hea, int dam, int st, ImageIcon p, String t, Weapons weap){
+        x=xV;
+        y=yV;
+        w=width;
+        h=height;
+        speed=sp;
+        health=hea;
+        damage=dam;
+        stam=st;
+        pic=p;
+        dx=0;
+        dy=0;
+        type = t;
+        weapon = weap;
+    }
+
     public void move(int screenW, int screenH, int maxW, int maxH) {
         //fix move method
         x+=dx;
@@ -53,6 +71,14 @@ public class Characters {
             y=maxH-h;
         else if (y<screenH-(h/2))
             y=screenH-(h/2);
+    }
+
+    public Weapons getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(Weapons weapon) {
+        this.weapon = weapon;
     }
 
     public String getType() {
