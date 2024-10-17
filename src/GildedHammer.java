@@ -7,6 +7,6 @@ public class GildedHammer extends Weapons {
     }
 
     public GildedHammer(int x, int y) {
-        super(x, y, 50, 50, 10, 50, 10, new ImageIcon("assets/sword.png"), "Gilded Hammer");
+        super(x, y, 50, 50, 20, 50, 20, new ImageIcon("assets/gildedhammer.png"), "Gilded Hammer","Heavy");
     }
 }

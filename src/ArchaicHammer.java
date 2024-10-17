@@ -7,6 +7,6 @@ public class ArchaicHammer extends Weapons {
     }
 
     public ArchaicHammer(int x, int y) {
-        super(x, y, 50, 50, 10, 50, 10, new ImageIcon("assets/sword.png"), "Archaic Hammer");
+        super(x, y, 50, 50, 17, 50, 18, new ImageIcon("assets/archaichammer.png"), "Archaic Hammer","Heavy");
     }
 }

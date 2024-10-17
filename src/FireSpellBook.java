@@ -1,5 +1,6 @@
 import javax.swing.*;
 
+//does dot damage
 public class FireSpellBook extends Weapons {
     // Copy code from LongSword.java and into this file but changing the method names
     public FireSpellBook() {
@@ -7,6 +8,6 @@ public class FireSpellBook extends Weapons {
     }
 
     public FireSpellBook(int x, int y) {
-        super(x, y, 50, 50, 10, 50, 10, new ImageIcon("assets/sword.png"), "Fire Spell Book");
+        super(x, y, 50, 50, 4, 50, 12, new ImageIcon("assets/firespellbook.png"), "Fire Spell Book","Mage");
     }
 }

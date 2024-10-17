@@ -1,10 +1,13 @@
 import javax.swing.*;
+import java.awt.*;
 
 
 public class Weapons {
 
+    //add a new constructor for spell books
+
     private int x,y,width,height, damage, range, speed;
-    private String type;
+    private String type, character;
     private ImageIcon pic;
 
     public Weapons(){
@@ -17,9 +20,10 @@ public class Weapons {
         speed = 0;
         pic = new ImageIcon();
         type = "";
+        character = "";
 
     }
-    public Weapons(int xV, int yV, int w, int h, int d, int r, int s, ImageIcon p, String t){
+    public Weapons(int xV, int yV, int w, int h, int d, int r, int s, ImageIcon p, String t, String c){
         x=xV;
         y=yV;
         width=w;
@@ -29,6 +33,19 @@ public class Weapons {
         speed = s;
         pic = p;
         type = t;
+        character = c;
+    }
+
+    public void drawWeapon(Graphics g2d){
+        g2d.drawImage(pic.getImage(),x,y,width,height,null);
+    }
+
+    public String getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(String character) {
+        this.character = character;
     }
 
     public int getX() {

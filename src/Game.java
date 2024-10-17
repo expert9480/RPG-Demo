@@ -9,11 +9,13 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 
 
 	private BufferedImage back;
-	private int key, x, y, typingIndex;
+	private int key, x, y, typingIndex, screenHeight, screenWidth;
 	private double time;
 	private ArrayList<Characters> charList;
-	private String screen, typing;
+	private ArrayList<Weapons> weaponList;
+	private String misha, screen, typing;
 	private Characters player;
+	private Weapons weapon;
 
 
 
@@ -31,6 +33,12 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		screen = "start";
 		time = System.currentTimeMillis();
 		typing = "Hello!";
+		weaponList = setWeaponList();
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		screenHeight = screenSize.height;
+		screenWidth = screenSize.width;
+
+
 
 
 
@@ -43,6 +51,19 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		temp.add(new Heavy(100,100));
 		temp.add(new Mage(100,100));
 		temp.add(new Scout(100,100));
+		return temp;
+	}
+
+	public ArrayList<Weapons> setWeaponList(){
+		ArrayList<Weapons> temp = new ArrayList<Weapons>();
+		temp.add(new LongSword(100,100));
+		temp.add(new KatanaSword(100,100));
+		temp.add(new GildedHammer(100,100));
+		temp.add(new ArchaicHammer(100,100));
+		temp.add(new FireSpellBook(100,100));
+		temp.add(new IceSpellBook(100,100));
+		temp.add(new MetalBat(100,100));
+		temp.add(new WoodenBat(100,100));
 		return temp;
 	}
 
@@ -75,48 +96,60 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 				//g2d.drawString("Press space to start",100,600);
 				break;
 			case "selection":
-				drawSelectScreen(g2d);
-
-
+				drawSelectCharacterScreen(g2d);
 				break;
-			case "charInfo":
-				drawCharInfo(g2d);
+			case "weaponSelect":
+				drawWeaponSelectScreen(g2d);
 				break;
 			case "game":
 				g2d.drawString("Game",100,100);
 		}
 	}
 
-	public void drawSelectScreen(Graphics g2d){
-//		System.out.println(player);
-		g2d.drawString("Select your character",100,100);
+	public void drawSelectCharacterScreen(Graphics g2d){
+		g2d.drawString("Select your character",700,100);
 		for(int i=0; i<charList.size(); i++){
-			g2d.drawString((i+1)+": "+charList.get(i).getType(),100,200+(i*100));
+			charList.get(i).setW(150);
+			charList.get(i).setH(150);
+			charList.get(i).setY((i*200)+50);
+			charList.get(i).drawChar(g2d);
+			g2d.drawString((i+1)+": "+charList.get(i).getType(),100+(charList.get(i).getX()+100),charList.get(i).getY()+(charList.get(i).getH()/2));
 		}
-		//drawCharInfo(g2d);
-	}
 
-	public void drawCharInfo(Graphics g2d){
 		if (player != null) {
-			g2d.drawString("You picked "+player.getType(),100,100);
-			g2d.drawString("Health: "+player.getHealth(),100,150);
-			g2d.drawString("Speed: "+player.getSpeed(),100,200);
-			g2d.drawString("Damage: "+player.getDamage(),100,250);
-			g2d.drawString("Stamina: "+player.getStam(),100,300);
-			player.setX(200);
-			player.setY(350);
-			player.setW(200);
-			player.setH(200);
-			player.drawChar(g2d);
-			g2d.drawString("Press space to start",100,700);
-			g2d.drawString("Press esc to go back",100,750);
-		}
-		else {
-			g2d.drawString("No character selected", 100, 100);
+			g2d.drawString("You picked "+player.getType(),800,200);
+			g2d.drawString("Health: "+player.getHealth(),800,250);
+			g2d.drawString("Speed: "+player.getSpeed(),800,300);
+			g2d.drawString("Stamina: "+player.getStam(),800,350);
+			g2d.drawString("Press enter to continue",800,700);
+			g2d.drawString("Press esc to go back",800,750);
 		}
 	}
 
+	public void drawWeaponSelectScreen(Graphics g2d){
+		g2d.drawString("Select your weapon",100,100);
+		for(int i=0; i<weaponList.size(); i++){
+			if (weaponList.get(i).getCharacter().equals(player.getType())){
+				weaponList.get(i).setWidth(150);
+				weaponList.get(i).setHeight(150);
+				if (i%2==0)
+					weaponList.get(i).setY(200);
+				else
+					weaponList.get(i).setY(400);
+				weaponList.get(i).drawWeapon(g2d);
+				g2d.drawString((i+1)+": "+weaponList.get(i).getType(),100+(weaponList.get(i).getX()+100),weaponList.get(i).getY()+(weaponList.get(i).getHeight()/2));
+			}
+		}
 
+		if (weapon != null) {
+			g2d.drawString("You picked "+weapon.getType(),800,200);
+			g2d.drawString("Damage: "+weapon.getDamage(),800,250);
+			g2d.drawString("Range: "+weapon.getRange(),800,300);
+			g2d.drawString("Speed: "+weapon.getSpeed(),800,350);
+			g2d.drawString("Press space to start",800,700);
+			g2d.drawString("Press esc to go back",800,750);
+		}
+	}
 
 	public void run()
 	{
@@ -176,31 +209,16 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		if((key==32) && (screen.equals("start"))){
 			screen="selection";
 		}
-		if ((key==49 && (screen.equals("selection")))){
-			player=charList.get(0);
-			screen="charInfo";
-		}
-		if ((key==50) && (screen.equals("selection"))){
-			player=charList.get(1);
-			screen="charInfo";
-		}
-		if ((key==51) && (screen.equals("selection"))){
-			player=charList.get(2);
-			screen="charInfo";
-		}
-		if ((key==52) && (screen.equals("selection"))){
-			player=charList.get(3);
-			screen="charInfo";
-		}
-		if ((key==27) && (screen.equals("charInfo"))){
+
+		if ((key==27) && (screen.equals("weaponSelect"))){
 			screen = "selection";
-			typingIndex=0;
-		}
-//		if ((key==27) && (screen.equals("selection"))){
-//			screen = "start";
 //			typingIndex=0;
-//		}
-		if((key==32) && (screen.equals("charInfo"))){
+		}
+		if((key==10) && (screen.equals("selection"))){
+			screen = "weaponSelect";
+		}
+
+		if((key==32) && (screen.equals("weaponSelect"))){
 			screen = "game";
 		}
 
@@ -271,6 +289,18 @@ public class Game  extends JPanel implements Runnable, KeyListener, MouseListene
 		// TODO Auto-generated method stub
 		x=arg0.getX();
 		y=arg0.getY();
+
+		for (int i=0; i<charList.size(); i++){
+			if ((screen.equals("selection")) && (charList.get(i).getX()+charList.get(i).getW()>=x&&charList.get(i).getX()<=x&&charList.get(i).getY()+charList.get(i).getH()>=y&&charList.get(i).getY()<=y)){
+				player=charList.get(i);
+			}
+		}
+
+		for (int i=0; i<weaponList.size(); i++){
+			if ((screen.equals("weaponSelect")) && (weaponList.get(i).getX()+weaponList.get(i).getWidth()>=x&&weaponList.get(i).getX()<=x&&weaponList.get(i).getY()+weaponList.get(i).getHeight()>=y&&weaponList.get(i).getY()<=y)){
+				weapon=weaponList.get(i);
+			}
+		}
 	}
 
 

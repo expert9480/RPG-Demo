@@ -1,5 +1,6 @@
 import javax.swing.*;
 
+//slows enemies
 public class IceSpellBook extends Weapons {
     // Copy code from LongSword.java and into this file but changing the method names
     public IceSpellBook() {
@@ -7,6 +8,6 @@ public class IceSpellBook extends Weapons {
     }
 
     public IceSpellBook(int x, int y) {
-        super(x, y, 50, 50, 10, 50, 10, new ImageIcon("assets/sword.png"), "Ice Spell Book");
+        super(x, y, 50, 50, 6, 50, 11, new ImageIcon("assets/icespellbook.png"), "Ice Spell Book","Mage");
     }
 }
