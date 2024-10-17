@@ -121,7 +121,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
             g2d.drawString("Health: " + player.getHealth(), 800, 250);
             g2d.drawString("Speed: " + player.getSpeed(), 800, 300);
             g2d.drawString("Stamina: " + player.getStam(), 800, 350);
-            g2d.drawString("Press enter to continue", 800, 700);
+            //g2d.drawString("Press enter to continue", 800, 700);
             g2d.drawString("Press esc to go back", 800, 750);
         }
     }
@@ -146,7 +146,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
             g2d.drawString("Damage: " + weapon.getDamage(), 800, 250);
             g2d.drawString("Range: " + weapon.getRange(), 800, 300);
             g2d.drawString("Speed: " + weapon.getSpeed(), 800, 350);
-            g2d.drawString("Press space to start", 800, 700);
+            //g2d.drawString("Press space to start", 800, 700);
             g2d.drawString("Press esc to go back", 800, 750);
         }
     }
@@ -206,13 +206,13 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
             screen = "selection";
 //			typingIndex=0;
         }
-        if ((key == 10) && (screen.equals("selection"))) {
-            screen = "weaponSelect";
-        }
-
-        if ((key == 32) && (screen.equals("weaponSelect"))) {
-            screen = "game";
-        }
+//        if ((key == 10) && (screen.equals("selection"))) {
+//            screen = "weaponSelect";
+//        }
+//
+//        if ((key == 32) && (screen.equals("weaponSelect"))) {
+//            screen = "game";
+//        }
 
         if (key == 16) {
             sprint = true;
@@ -325,6 +325,20 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
     public void mouseClicked(MouseEvent arg0) {
         // TODO Auto-generated method stub
         //check screen
+        //(m.getButton() == 1)
+        for (int i = 0; i < charList.size(); i++) {
+            if ((screen.equals("selection")) && (arg0.getButton() == 1) && (charList.get(i).getX() + charList.get(i).getW() >= x && charList.get(i).getX() <= x && charList.get(i).getY() + charList.get(i).getH() >= y && charList.get(i).getY() <= y)) {
+                player = charList.get(i);
+                screen = "weaponSelect";
+            }
+        }
+        for (int i = 0; i < weaponList.size(); i++) {
+            if ((screen.equals("weaponSelect")) && (arg0.getButton() == 1) && (weaponList.get(i).getX() + weaponList.get(i).getWidth() >= x && weaponList.get(i).getX() <= x && weaponList.get(i).getY() + weaponList.get(i).getHeight() >= y && weaponList.get(i).getY() <= y)) {
+                weapon = weaponList.get(i);
+                screen = "game";
+            }
+        }
+
     }
 
 
