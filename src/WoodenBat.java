@@ -7,6 +7,6 @@ public class WoodenBat extends Weapons {
     }
 
     public WoodenBat(int x, int y) {
-        super(x, y, 50, 50, 9, 50, 18, new ImageIcon("assets/woodenbat.png"), "Wooden Bat","Scout");
+        super(x, y, 50, 50, 9, 50, 18, new ImageIcon("assets/Weapons/woodenbat.png"), "Wooden Bat","Scout");
     }
 }

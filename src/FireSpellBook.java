@@ -8,6 +8,6 @@ public class FireSpellBook extends Weapons {
     }
 
     public FireSpellBook(int x, int y) {
-        super(x, y, 50, 50, 4, 50, 12, new ImageIcon("assets/firespellbook.png"), "Fire Spell Book","Mage");
+        super(x, y, 50, 50, 4, 50, 12, new ImageIcon("assets/Weapons/firespellbook.png"), "Fire Spell Book","Mage");
     }
 }

@@ -7,6 +7,6 @@ public class KatanaSword extends Weapons {
     }
 
     public KatanaSword(int x, int y) {
-        super(x, y, 50, 50, 7, 50, 15, new ImageIcon("assets/katana.png"), "Katana","Fighter");
+        super(x, y, 50, 50, 7, 50, 15, new ImageIcon("assets/Weapons/katana.png"), "Katana","Fighter");
     }
 }

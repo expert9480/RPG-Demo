@@ -75,8 +75,8 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         switch (screen) {
             case "start":
 
-                g2d.drawString("Juck".substring(0, typingIndex), 100, 100);
-                if (typingIndex < "Juck".length()) {
+                g2d.drawString((Main.misha()).substring(0, typingIndex), 100, 100);
+                if (typingIndex < (Main.misha()).length()) {
                     if (System.currentTimeMillis() - time > 150) {
                         time = System.currentTimeMillis();
                         typingIndex++;
@@ -122,7 +122,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
             g2d.drawString("Speed: " + player.getSpeed(), 800, 300);
             g2d.drawString("Stamina: " + player.getStam(), 800, 350);
             //g2d.drawString("Press enter to continue", 800, 700);
-            g2d.drawString("Press esc to go back", 800, 750);
+            //g2d.drawString("Press esc to go back", 800, 750);
         }
     }
 
@@ -307,15 +307,15 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         x = arg0.getX();
         y = arg0.getY();
 
-        for (int i = 0; i < charList.size(); i++) {
-            if ((screen.equals("selection")) && (charList.get(i).getX() + charList.get(i).getW() >= x && charList.get(i).getX() <= x && charList.get(i).getY() + charList.get(i).getH() >= y && charList.get(i).getY() <= y)) {
-                player = charList.get(i);
+        for (Characters characters : charList) {
+            if ((screen.equals("selection")) && (characters.getX() + characters.getW() >= x && characters.getX() <= x && characters.getY() + characters.getH() >= y && characters.getY() <= y)) {
+                player = characters;
             }
         }
 
-        for (int i = 0; i < weaponList.size(); i++) {
-            if ((screen.equals("weaponSelect")) && (weaponList.get(i).getX() + weaponList.get(i).getWidth() >= x && weaponList.get(i).getX() <= x && weaponList.get(i).getY() + weaponList.get(i).getHeight() >= y && weaponList.get(i).getY() <= y)) {
-                weapon = weaponList.get(i);
+        for (Weapons weapons : weaponList) {
+            if ((screen.equals("weaponSelect")) && (weapons.getX() + weapons.getWidth() >= x && weapons.getX() <= x && weapons.getY() + weapons.getHeight() >= y && weapons.getY() <= y)) {
+                weapon = weapons;
             }
         }
     }
@@ -326,15 +326,15 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         // TODO Auto-generated method stub
         //check screen
         //(m.getButton() == 1)
-        for (int i = 0; i < charList.size(); i++) {
-            if ((screen.equals("selection")) && (arg0.getButton() == 1) && (charList.get(i).getX() + charList.get(i).getW() >= x && charList.get(i).getX() <= x && charList.get(i).getY() + charList.get(i).getH() >= y && charList.get(i).getY() <= y)) {
-                player = charList.get(i);
+        for (Characters characters : charList) {
+            if ((screen.equals("selection")) && (arg0.getButton() == 1) && (characters.getX() + characters.getW() >= x && characters.getX() <= x && characters.getY() + characters.getH() >= y && characters.getY() <= y)) {
+                player = characters;
                 screen = "weaponSelect";
             }
         }
-        for (int i = 0; i < weaponList.size(); i++) {
-            if ((screen.equals("weaponSelect")) && (arg0.getButton() == 1) && (weaponList.get(i).getX() + weaponList.get(i).getWidth() >= x && weaponList.get(i).getX() <= x && weaponList.get(i).getY() + weaponList.get(i).getHeight() >= y && weaponList.get(i).getY() <= y)) {
-                weapon = weaponList.get(i);
+        for (Weapons weapons : weaponList) {
+            if ((screen.equals("weaponSelect")) && (arg0.getButton() == 1) && (weapons.getX() + weapons.getWidth() >= x && weapons.getX() <= x && weapons.getY() + weapons.getHeight() >= y && weapons.getY() <= y)) {
+                weapon = weapons;
                 screen = "game";
             }
         }

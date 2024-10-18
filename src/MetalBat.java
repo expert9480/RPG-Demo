@@ -7,7 +7,7 @@ public class MetalBat extends Weapons {
     }
 
     public MetalBat(int x, int y) {
-        super(x, y, 50, 50, 7, 50, 20, new ImageIcon("assets/metalbat.png"), "Metal Bat","Scout");
+        super(x, y, 50, 50, 7, 50, 20, new ImageIcon("assets/Weapons/metalbat.png"), "Metal Bat","Scout");
     }
 }
 

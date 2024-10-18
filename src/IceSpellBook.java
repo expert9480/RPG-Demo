@@ -8,6 +8,6 @@ public class IceSpellBook extends Weapons {
     }
 
     public IceSpellBook(int x, int y) {
-        super(x, y, 50, 50, 6, 50, 11, new ImageIcon("assets/icespellbook.png"), "Ice Spell Book","Mage");
+        super(x, y, 50, 50, 6, 50, 11, new ImageIcon("assets/Weapons/icespellbook.png"), "Ice Spell Book","Mage");
     }
 }
