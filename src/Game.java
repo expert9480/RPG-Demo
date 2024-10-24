@@ -122,11 +122,26 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         }
     }
 
+    public Boolean collision(int x1, int y1, int x2, int y2){
+        //x1 and y1 are the coordinates of the object
+        //x2 and y2 are the coordinates of the background object or picture or enemy
+        if (x1 > x2 && x1 < x2 + 50 && y1 > y2 && y1 < y2 + 50){
+            return true;
+        }
+        else
+            return false;
+
+        //what if we change the inputs the be the actual thing instead of numbers
+        //we need to take into account width and height
+    }
+
     public void drawGameScreen(Graphics g2d) {
         //if (!spells.isEmpty()){
         if (player.getType().equals("Mage")) {
             for (int i = 0; i < spells.size(); i++) {
                 spells.get(i).drawSpell(g2d);
+                spells.get(i).setX(spells.get(i).getX() + (spells.get(i).getDx()*spells.get(i).getSpeed()));
+                spells.get(i).setY(spells.get(i).getY() + (spells.get(i).getDy()*spells.get(i).getSpeed()));
             }
         }
         enemies.peek().drawChar(g2d);
@@ -182,21 +197,35 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         }
     }
 
-    public void attack(){
+    public void attack(int x1, int y1, int x2, int y2){
         //if(player.getWeapon() instanceof SpellBooks){
         if(weapon instanceof SpellBooks){
+            int dx,dy;
+            dx = (x2 - x1);
+            dy = (y2 - y1);
+
+            double magnitude = Math.sqrt(dx * dx + dy * dy);
+
+            // Normalize the direction vector
+            double normalizedDx = dx / magnitude;
+            double normalizedDy = dy / magnitude;
+
             if (weapon.getType().equals("Fire Spell Book")){
-                spells.add(new FireSpell(player.getX(),player.getY()));
+                spells.add(new FireSpell(player.getX(),player.getY(), (int) normalizedDx, (int) normalizedDy));
                 System.out.println("fire");
             }
             else if (weapon.getType().equals("Ice Spell Book")){
-                spells.add(new IceSpell(player.getX(),player.getY()));
+                spells.add(new IceSpell(player.getX(),player.getY(), (int) normalizedDx, (int) normalizedDy));
                 System.out.println("ice");
             }
+
         }
-        else{
-            //add weapon attack
-        }
+//        else{
+//            //add weapon attack
+//        }
+    }
+    public void attack(){
+        //add weapon attack here
     }
 
     public void run() {
@@ -247,10 +276,10 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         key = e.getKeyCode();
         System.out.println(key);
 
-        if ((key == 81) && (screen.equals("game"))) {
-            //enemies.remove();
-            attack();
-        }
+//        if ((key == 81) && (screen.equals("game"))) {
+//            //enemies.remove();
+//            attack();
+//        }
 
         if ((key == 32) && (screen.equals("start"))) {
             screen = "selection";
@@ -396,7 +425,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         }
 
         if ((screen.equals("game")) && (arg0.getButton() == 1)){
-            attack();
+            attack(player.getX(), player.getY(), x, y);
         }
 
     }

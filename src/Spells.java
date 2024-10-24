@@ -3,6 +3,7 @@ import java.awt.*;
 
 public class Spells {
     private int x,y,w,h,speed,cost;
+    private double dx, dy;
     private ImageIcon pic;
     private String type;
 
@@ -15,9 +16,11 @@ public class Spells {
         cost=0;
         pic = new ImageIcon();
         type = "";
+        dx = 0;
+        dy = 0;
     }
 
-    public Spells(int xV, int yV, int width, int height, int sp, int c, ImageIcon p, String t){
+    public Spells(int xV, int yV, int width, int height, int sp, int c, ImageIcon p, String t, double dx, double dy){
         x=xV;
         y=yV;
         w=width;
@@ -26,6 +29,29 @@ public class Spells {
         cost=c;
         pic=p;
         type = t;
+        this.dx = dx;
+        this.dy = dy;
+    }
+
+    public void move(){
+        x+=dx*speed;
+        y+=dy*speed;
+    }
+
+    public double getDx() {
+        return dx;
+    }
+
+    public void setDx(double dx) {
+        this.dx = dx;
+    }
+
+    public double getDy() {
+        return dy;
+    }
+
+    public void setDy(double dy) {
+        this.dy = dy;
     }
 
     public int getX() {
