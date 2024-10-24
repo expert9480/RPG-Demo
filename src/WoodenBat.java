@@ -1,7 +1,6 @@
 import javax.swing.*;
 
 public class WoodenBat extends Weapons {
-    // Copy code from LongSword.java and into this file but changing the method names
     public WoodenBat() {
         super();
     }

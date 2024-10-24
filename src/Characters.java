@@ -4,7 +4,7 @@ import java.awt.*;
 
 
 public class Characters {
-    private int x,y,w,h,speed,health,damage,stam,dx,dy;
+    private int x,y,w,h,speed,health,damage,mana,dx,dy;
     private ImageIcon pic;
     private String type;
     private Weapons weapon;
@@ -17,14 +17,14 @@ public class Characters {
         speed=0;
         health=0;
         damage=0;
-        stam=0;
+
         dx=0;
         dy=0;
         pic = new ImageIcon();
         type = "";
     }
 
-    public Characters(int xV, int yV, int width, int height, int sp, int hea, int dam, int st, ImageIcon p, String t){
+    public Characters(int xV, int yV, int width, int height, int sp, int hea, int dam, ImageIcon p, String t){
         x=xV;
         y=yV;
         w=width;
@@ -32,14 +32,13 @@ public class Characters {
         speed=sp;
         health=hea;
         damage=dam;
-        stam=st;
         pic=p;
         dx=0;
         dy=0;
         type = t;
     }
 
-    public Characters(int xV, int yV, int width, int height, int sp, int hea, int dam, int st, ImageIcon p, String t, Weapons weap){
+    public Characters(int xV, int yV, int width, int height, int sp, int hea, int dam, ImageIcon p, String t, Weapons weap){
         x=xV;
         y=yV;
         w=width;
@@ -47,12 +46,38 @@ public class Characters {
         speed=sp;
         health=hea;
         damage=dam;
-        stam=st;
         pic=p;
         dx=0;
         dy=0;
         type = t;
         weapon = weap;
+    }
+
+    public Characters(int x, int y, int w, int h, int speed, int health, int damage, int mana, ImageIcon pic, String type) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.speed = speed;
+        this.health = health;
+        this.damage = damage;
+        this.mana = mana;
+        this.pic = pic;
+        this.type = type;
+    }
+
+    public Characters(int x, int y, int h, int w, int speed, int health, int damage, int mana, ImageIcon pic, String type, Weapons weapon) {
+        this.x = x;
+        this.y = y;
+        this.h = h;
+        this.w = w;
+        this.speed = speed;
+        this.health = health;
+        this.damage = damage;
+        this.mana = mana;
+        this.pic = pic;
+        this.type = type;
+        this.weapon = weapon;
     }
 
     public void move(int screenW, int screenH, int maxW, int maxH) {
@@ -79,6 +104,14 @@ public class Characters {
 
     public void setWeapon(Weapons weapon) {
         this.weapon = weapon;
+    }
+
+    public int getMana() {
+        return mana;
+    }
+
+    public void setMana(int mana) {
+        this.mana = mana;
     }
 
     public String getType() {
@@ -147,14 +180,6 @@ public class Characters {
 
     public void setDamage(int damage) {
         this.damage = damage;
-    }
-
-    public int getStam() {
-        return stam;
-    }
-
-    public void setStam(int stam) {
-        this.stam = stam;
     }
 
     public int getDx() {

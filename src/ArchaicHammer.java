@@ -1,7 +1,6 @@
 import javax.swing.*;
 
 public class ArchaicHammer extends Weapons {
-    // Copy code from LongSword.java and into this file but changing the method names
     public ArchaicHammer() {
         super();
     }

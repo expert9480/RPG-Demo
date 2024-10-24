@@ -6,7 +6,7 @@ public class Weapons {
 
     //add a new constructor for spell books
 
-    private int x,y,width,height, damage, range, speed;
+    private int x,y,width,height, damage, range, speed, mana;
     private String type, character;
     private ImageIcon pic;
 
@@ -23,7 +23,21 @@ public class Weapons {
         character = "";
 
     }
-    public Weapons(int xV, int yV, int w, int h, int d, int r, int s, ImageIcon p, String t, String c){
+
+    public Weapons(int x, int y, int width, int height, int damage, int range, int speed, ImageIcon pic, String type, String character) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.damage = damage;
+        this.range = range;
+        this.speed = speed;
+        this.type = type;
+        this.character = character;
+        this.pic = pic;
+    }
+
+    public Weapons(int xV, int yV, int w, int h, int d, int r, int s, ImageIcon p, String t, String c, int mana){
         x=xV;
         y=yV;
         width=w;
@@ -34,10 +48,19 @@ public class Weapons {
         pic = p;
         type = t;
         character = c;
+        this.mana = mana;
     }
 
     public void drawWeapon(Graphics g2d){
         g2d.drawImage(pic.getImage(),x,y,width,height,null);
+    }
+
+    public int getMana() {
+        return mana;
+    }
+
+    public void setMana(int mana) {
+        this.mana = mana;
     }
 
     public String getCharacter() {
