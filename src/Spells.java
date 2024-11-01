@@ -2,7 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Spells {
-    private int x,y,w,h,speed,cost;
+    private int w,h,speed,cost;
+    //private int x,y;
+    private double x,y;
+    //private int dx, dy;
     private double dx, dy;
     private ImageIcon pic;
     private String type;
@@ -20,7 +23,7 @@ public class Spells {
         dy = 0;
     }
 
-    public Spells(int xV, int yV, int width, int height, int sp, int c, ImageIcon p, String t, double dx, double dy){
+    public Spells(double xV, double yV, int width, int height, int sp, int c, ImageIcon p, String t, double dx, double dy){
         x=xV;
         y=yV;
         w=width;
@@ -34,8 +37,8 @@ public class Spells {
     }
 
     public void move(){
-        x+=dx*speed;
-        y+=dy*speed;
+        x+=(int)(dx*speed);
+        y+=(int)(dy*speed);
     }
 
     public double getDx() {
@@ -54,7 +57,7 @@ public class Spells {
         this.dy = dy;
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
@@ -62,7 +65,7 @@ public class Spells {
         this.x = x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
@@ -119,6 +122,6 @@ public class Spells {
     }
 
     public void drawSpell(Graphics g2d){
-        g2d.drawImage(pic.getImage(),x,y,w,h,null);
+        g2d.drawImage(pic.getImage(),(int)x,(int)y,w,h,null);
     }
 }

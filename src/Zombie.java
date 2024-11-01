@@ -12,6 +12,6 @@ public class Zombie extends Enemy{
 
     public Zombie(int x, int y){
         //change the image
-        super(x,y,50,50,3,50,10,new ImageIcon("assets/Weapons/katana.png"),"Zombie",new Melee());
+        super(x,y,100,100,3,50,10,new ImageIcon("assets/Enemies/zombie.png"),"Zombie",new Melee());
     }
 }

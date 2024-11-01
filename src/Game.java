@@ -140,11 +140,37 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         if (player.getType().equals("Mage")) {
             for (int i = 0; i < spells.size(); i++) {
                 spells.get(i).drawSpell(g2d);
-                spells.get(i).setX(spells.get(i).getX() + (spells.get(i).getDx()*spells.get(i).getSpeed()));
-                spells.get(i).setY(spells.get(i).getY() + (spells.get(i).getDy()*spells.get(i).getSpeed()));
-            }
+                //spells.get(i).move();
+                //spells.get(i).setX((spells.get(i).getX() + (spells.get(i).getDx()*spells.get(i).getSpeed())));
+                //spells.get(i).setY((spells.get(i).getY() + (spells.get(i).getDy()*spells.get(i).getSpeed())));
+
+                double tempX =(spells.get(i).getX() + (spells.get(i).getDx() * spells.get(i).getSpeed()));
+                double tempY =(spells.get(i).getY() + (spells.get(i).getDy() * spells.get(i).getSpeed()));
+                System.out.println(tempX + " " + tempY);
+
+                int tempX2 = (int)tempX;
+                int tempY2 = (int)tempY;
+                System.out.println(tempX2 + " " + tempY2);
+
+                spells.get(i).setX(tempX2);
+                spells.get(i).setY(tempY2);
+
+
         }
-        enemies.peek().drawChar(g2d);
+//            for (int i=0; i<spells.size(); i++){
+//            }
+        }
+        if (enemies.peek()!=null) {
+            if (enemies.peek().getHealth() <= 0) {
+                enemies.remove();
+            }
+            enemies.peek().drawChar(g2d);
+            g2d.drawString("Enemy Health: "+(enemies.peek().getHealth()),800,200);
+        }
+
+//        weapon.setX(player.getX());
+//        weapon.setY(player.getY()-player.getH()-20);
+        weapon.drawWeapon(g2d);
         player.drawChar(g2d);
     }
 
@@ -200,33 +226,50 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
     public void attack(int x1, int y1, int x2, int y2){
         //if(player.getWeapon() instanceof SpellBooks){
         if(weapon instanceof SpellBooks){
-            int dx,dy;
-            dx = (x2 - x1);
-            dy = (y2 - y1);
 
-            double magnitude = Math.sqrt(dx * dx + dy * dy);
+            int tdx,tdy;
+            tdx = (x2 - x1);
+            tdy = (y2 - y1);
 
-            // Normalize the direction vector
-            double normalizedDx = dx / magnitude;
-            double normalizedDy = dy / magnitude;
+            double theta = Math.atan2(tdy, tdx);
+            double dx = Math.cos(theta);
+            double dy = Math.sin(theta);
+
+
 
             if (weapon.getType().equals("Fire Spell Book")){
-                spells.add(new FireSpell(player.getX(),player.getY(), (int) normalizedDx, (int) normalizedDy));
+                spells.add(new FireSpell(player.getX(),player.getY(), dx, dy));
                 System.out.println("fire");
+
             }
             else if (weapon.getType().equals("Ice Spell Book")){
-                spells.add(new IceSpell(player.getX(),player.getY(), (int) normalizedDx, (int) normalizedDy));
+                spells.add(new IceSpell(player.getX(),player.getY(), dx, dy));
                 System.out.println("ice");
+
             }
 
         }
+
+
 //        else{
 //            //add weapon attack
 //        }
     }
-    public void attack(){
+    public void meleeAttack(){
         //add weapon attack here
+//        if (weapon.getX() >= celestialWheatShop.getX() && weapon.getX() <= celestialWheatShop.getX() + celestialWheatShop.getW()) && (weapon.getY() >= celestialWheatShop.getY() && weapon.getY() <= celestialWheatShop.getY() + celestialWheatShop.getH())){
+//
+//        }
+        //if (enemies.peek()==true)
+        if (enemies.peek()!=null){
+            if( weapon.getX() + weapon.getWidth() >= enemies.peek().getX() && weapon.getX() <= enemies.peek().getX() + enemies.peek().getW() && weapon.getY() + weapon.getHeight() >= enemies.peek().getY() && weapon.getY() <= enemies.peek().getY() + enemies.peek().getH()){
+                enemies.peek().setHealth(enemies.peek().getHealth()-weapon.getDamage());
+            }
+        }
+
     }
+
+
 
     public void run() {
         try {
@@ -288,6 +331,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         if ((key == 27) && (screen.equals("weaponSelect"))) {
             screen = "selection";
             weapon = null;
+            player = null;
 //			typingIndex=0;
         }
 
@@ -306,22 +350,30 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         if (key == 87 && (screen.equals("game"))) {
             //-1
             player.setDy(-1);
+            weapon.setX(player.getX());
+            weapon.setY(player.getY()-player.getH());
             //     player.setPic(new ImageIcon("assets/farmer/walkUp.gif"));
             //player.getPic().getImage().flush();
         }
         if (key == 83 && (screen.equals("game"))) {
             player.setDy(1);
+            weapon.setX(player.getX());
+            weapon.setY(player.getY()+player.getH());
             //     player.setPic(new ImageIcon("assets/farmer/walkDown.gif"));
             //player.getPic().getImage().flush();
         }
         if (key == 65 && (screen.equals("game"))) {
             //-1
             player.setDx(-1);
+            weapon.setX(player.getX()-player.getW());
+            weapon.setY(player.getY());
             //     player.setPic(new ImageIcon("assets/farmer/walkLeft.gif"));
             //player.getPic().getImage().flush();
         }
         if (key == 68 && (screen.equals("game"))) {
             player.setDx(1);
+            weapon.setX(player.getX()+player.getW());
+            weapon.setY(player.getY());
             //     player.setPic(new ImageIcon("assets/farmer/walkRight.gif"));
             //player.getPic().getImage().flush();
         }
@@ -418,14 +470,20 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
             }
         }
         for (Weapons weapons : weaponList) {
-            if ((screen.equals("weaponSelect")) && (arg0.getButton() == 1) && (weapons.getX() + weapons.getWidth() >= x && weapons.getX() <= x && weapons.getY() + weapons.getHeight() >= y && weapons.getY() <= y)) {
+            if ((screen.equals("weaponSelect")) && (weapon != null) && (arg0.getButton() == 1) && (weapons.getX() + weapons.getWidth() >= x && weapons.getX() <= x && weapons.getY() + weapons.getHeight() >= y && weapons.getY() <= y)) {
                 weapon = weapons;
                 screen = "game";
             }
         }
 
         if ((screen.equals("game")) && (arg0.getButton() == 1)){
-            attack(player.getX(), player.getY(), x, y);
+            if(weapon instanceof SpellBooks) {
+                attack(player.getX(), player.getY(), x, y);
+            }
+            else {
+                meleeAttack();
+            }
+
         }
 
     }
