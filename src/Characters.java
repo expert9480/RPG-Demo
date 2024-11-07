@@ -4,7 +4,9 @@ import java.awt.*;
 
 
 public class Characters {
-    private int x,y,w,h,speed,health,damage,mana,dx,dy;
+    private int w,h,speed,health,damage,mana,dx,dy;
+    private int x,y;
+    private double doubleX,doubleY;
     private ImageIcon pic;
     private String type;
     private Weapons weapon;
@@ -123,7 +125,15 @@ public class Characters {
     }
 
     public void drawChar(Graphics g2d){
-        g2d.drawImage(pic.getImage(),x,y,w,h,null);
+        g2d.drawImage(pic.getImage(),(int)x,(int)y,w,h,null);
+    }
+
+    public void drawDoubleChar(Graphics g2d){
+        g2d.drawImage(pic.getImage(),(int)doubleX,(int)doubleY,w,h,null);
+    }
+
+    public double getDoubleX() {
+        return x;
     }
 
     public int getX() {
@@ -134,8 +144,20 @@ public class Characters {
         this.x = x;
     }
 
+    public double getDoubleY() {
+        return y;
+    }
+
     public int getY() {
         return y;
+    }
+
+    public void setDoubleX(double doubleX) {
+        this.doubleX = doubleX;
+    }
+
+    public void setDoubleY(double doubleY) {
+        this.doubleY = doubleY;
     }
 
     public void setY(int y) {

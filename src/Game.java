@@ -17,7 +17,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
     private double time;
     private ArrayList<Characters> charList;
     private ArrayList<Weapons> weaponList;
-    private String misha, screen, typing;
+    private String misha, screen, typing, playerWeapPosition;
     private Characters player;
     private Weapons weapon;
     private boolean sprint;
@@ -46,6 +46,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         spells = new ArrayList<Spells>();
         enemies = setEnemies();
         //System.out.println(enemies.size());
+        playerWeapPosition = "right";
 
 
     }
@@ -164,14 +165,23 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
             if (enemies.peek().getHealth() <= 0) {
                 enemies.remove();
             }
-            enemies.peek().drawChar(g2d);
+            enemies.peek().drawEnemy(g2d);
+            enemiesMove();
             g2d.drawString("Enemy Health: "+(enemies.peek().getHealth()),800,200);
         }
+        g2d.drawString("Player Health: "+player.getHealth(),800,275);
+        player.setW(100);
+        player.setH(100);
+        weapon.setWidth(100);
+        weapon.setHeight(100);
+
 
 //        weapon.setX(player.getX());
 //        weapon.setY(player.getY()-player.getH()-20);
         weapon.drawWeapon(g2d);
         player.drawChar(g2d);
+        setPlayerWeapPosition();
+        enemiesAttack();
     }
 
     public void drawSelectCharacterScreen(Graphics g2d) {
@@ -225,27 +235,44 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
 
     public void attack(int x1, int y1, int x2, int y2){
         //if(player.getWeapon() instanceof SpellBooks){
+        //x1,y1 is weapon
+        //x2,y2 is mouse
         if(weapon instanceof SpellBooks){
 
-            int tdx,tdy;
+            double tdx,tdy;
             tdx = (x2 - x1);
             tdy = (y2 - y1);
 
             double theta = Math.atan2(tdy, tdx);
-            double dx = Math.cos(theta);
-            double dy = Math.sin(theta);
 
+            double length = Math.sqrt(tdx*tdx + tdy*tdy);
+            double velocityX = 0, velocityY = 0;
 
+            if (length != 0){
+                velocityX = (double)((tdx/length)*weapon.getSpeed());
+                velocityY = (double)((tdy/length)*weapon.getSpeed());
+
+            }
 
             if (weapon.getType().equals("Fire Spell Book")){
-                spells.add(new FireSpell(player.getX(),player.getY(), dx, dy));
+//                spells.add(new FireSpell(weapon.getX(),weapon.getY(), velocityX, velocityY));
+                spells.add(new FireSpell(weapon.getX()+(weapon.getWidth()/2),weapon.getY()+(weapon.getHeight()/2), velocityX, velocityY));
                 System.out.println("fire");
 
             }
             else if (weapon.getType().equals("Ice Spell Book")){
-                spells.add(new IceSpell(player.getX(),player.getY(), dx, dy));
+                spells.add(new IceSpell(weapon.getX()+(weapon.getWidth()/2),weapon.getY()+(weapon.getHeight()/2), velocityX, velocityY));
+//                spells.add(new IceSpell(weapon.getX(),weapon.getY(), velocityX, velocityY));
                 System.out.println("ice");
 
+            }
+
+            for (Spells spell : spells){
+                if (enemies.peek()!=null){
+                    if( spell.getX() + spell.getW() >= enemies.peek().getX() && spell.getX() <= enemies.peek().getX() + enemies.peek().getW() && spell.getY() + spell.getH() >= enemies.peek().getY() && spell.getY() <= enemies.peek().getY() + enemies.peek().getH()){
+                        enemies.peek().setHealth(enemies.peek().getHealth()-weapon.getDamage());
+                    }
+                }
             }
 
         }
@@ -266,7 +293,62 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
                 enemies.peek().setHealth(enemies.peek().getHealth()-weapon.getDamage());
             }
         }
+    }
 
+    public void enemiesAttack(){
+        if (enemies.peek()!=null) {
+            if ((player.getX() >= enemies.peek().getX() && player.getX() <= enemies.peek().getX() + enemies.peek().getW() && player.getY() >= enemies.peek().getY() && player.getY() <= enemies.peek().getY() + enemies.peek().getH()) ) {
+            //&& ((System.currentTimeMillis() - time / 1000) == 1)
+                player.setHealth(player.getHealth() - enemies.peek().getDamage());
+            }
+        }
+    }
+
+    public void enemiesMove(){
+        if (enemies.peek()!=null){
+            double tdx,tdy;
+            tdx = (player.getX() - enemies.peek().getX());
+            tdy = (player.getY() - enemies.peek().getY());
+
+            double theta = Math.atan2(tdy, tdx);
+
+            double length = Math.sqrt(tdx*tdx + tdy*tdy);
+            double velocityX = 0, velocityY = 0;
+
+            if (length != 0){
+                velocityX = (double)((tdx/length)*enemies.peek().getSpeed());
+                velocityY = (double)((tdy/length)*enemies.peek().getSpeed());
+            }
+//
+//            enemies.peek().setDoubleX((enemies.peek().getX() + velocityX));
+//            enemies.peek().setDoubleY((enemies.peek().getY() + velocityY));
+
+            enemies.peek().setX((enemies.peek().getX() + (velocityX)));
+            enemies.peek().setY((enemies.peek().getY() + (velocityY)));
+        }
+    }
+
+    public void setPlayerWeapPosition(){
+        //if (playerWeapPosition!=null) {
+            switch (playerWeapPosition) {
+                case "up" -> {
+                    weapon.setX(player.getX());
+                    weapon.setY(player.getY() - player.getH());
+                }
+                case "down" -> {
+                    weapon.setX(player.getX());
+                    weapon.setY(player.getY() + player.getH());
+                }
+                case "left" -> {
+                    weapon.setX(player.getX() - player.getW());
+                    weapon.setY(player.getY());
+                }
+                case "right" -> {
+                    weapon.setX(player.getX() + player.getW());
+                    weapon.setY(player.getY());
+                }
+            }
+        //}
     }
 
 
@@ -350,30 +432,34 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         if (key == 87 && (screen.equals("game"))) {
             //-1
             player.setDy(-1);
-            weapon.setX(player.getX());
-            weapon.setY(player.getY()-player.getH());
+            playerWeapPosition = "up";
+//            weapon.setX(player.getX());
+//            weapon.setY(player.getY()-player.getH());
             //     player.setPic(new ImageIcon("assets/farmer/walkUp.gif"));
             //player.getPic().getImage().flush();
         }
         if (key == 83 && (screen.equals("game"))) {
             player.setDy(1);
-            weapon.setX(player.getX());
-            weapon.setY(player.getY()+player.getH());
+            playerWeapPosition = "down";
+//            weapon.setX(player.getX());
+//            weapon.setY(player.getY()+player.getH());
             //     player.setPic(new ImageIcon("assets/farmer/walkDown.gif"));
             //player.getPic().getImage().flush();
         }
         if (key == 65 && (screen.equals("game"))) {
             //-1
             player.setDx(-1);
-            weapon.setX(player.getX()-player.getW());
-            weapon.setY(player.getY());
+            playerWeapPosition = "left";
+//            weapon.setX(player.getX()-player.getW());
+//            weapon.setY(player.getY());
             //     player.setPic(new ImageIcon("assets/farmer/walkLeft.gif"));
             //player.getPic().getImage().flush();
         }
         if (key == 68 && (screen.equals("game"))) {
             player.setDx(1);
-            weapon.setX(player.getX()+player.getW());
-            weapon.setY(player.getY());
+            playerWeapPosition = "right";
+//            weapon.setX(player.getX()+player.getW());
+//            weapon.setY(player.getY());
             //     player.setPic(new ImageIcon("assets/farmer/walkRight.gif"));
             //player.getPic().getImage().flush();
         }
@@ -381,7 +467,6 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         //-1
         if ((sprint) && player.getDx() == -1 && (screen.equals("game"))) {
             player.setDx(-2);
-            //1
         } else if ((sprint) && player.getDx() == 1 && (screen.equals("game"))) {
             player.setDx(2);
         } else if ((sprint) && player.getDy() == -1 && (screen.equals("game"))) {
@@ -397,12 +482,13 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
     //DO NOT DELETE
     @Override
     public void keyReleased(KeyEvent e) {
+        key = e.getKeyCode();
         if (key == 87) {
             player.setDy(0);
 //            if ((player.getDX() == 0) && (player.getDY() == 0))
 //                player.setPic(new ImageIcon("assets/farmer/idleUp.png"));
         }
-        if (key == 83) {
+        else if (key == 83) {
             player.setDy(0);
 //            if ((farmer.getDX() == 0) && (farmer.getDY() == 0))
 //                farmer.setPic(new ImageIcon("assets/farmer/idleDown.png"));
@@ -412,7 +498,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
 //            if ((farmer.getDX() == 0) && (farmer.getDY() == 0))
 //                farmer.setPic(new ImageIcon("assets/farmer/idleLeft.png"));
         }
-        if (key == 68) {
+        else if (key == 68) {
             player.setDx(0);
 //            if ((farmer.getDX() == 0) && (farmer.getDY() == 0))
 //                farmer.setPic(new ImageIcon("assets/farmer/idleRight.png"));
@@ -478,7 +564,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
 
         if ((screen.equals("game")) && (arg0.getButton() == 1)){
             if(weapon instanceof SpellBooks) {
-                attack(player.getX(), player.getY(), x, y);
+                attack(weapon.getX()+(weapon.getWidth()/2),weapon.getY()+(weapon.getHeight()/2), x, y);
             }
             else {
                 meleeAttack();
