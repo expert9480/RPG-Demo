@@ -445,16 +445,16 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
 
         if (key == 87 && (screen.equals("game"))) {
             //-1
-            player.setDy(-1);
-            playerWeapPosition = "up";
+            player.setDy(-player.getSpeed());
+           // playerWeapPosition = "up";
 //            weapon.setX(player.getX());
 //            weapon.setY(player.getY()-player.getH());
             //     player.setPic(new ImageIcon("assets/farmer/walkUp.gif"));
             //player.getPic().getImage().flush();
         }
         if (key == 83 && (screen.equals("game"))) {
-            player.setDy(1);
-            playerWeapPosition = "down";
+            player.setDy(player.getSpeed());
+            //playerWeapPosition = "down";
 //            weapon.setX(player.getX());
 //            weapon.setY(player.getY()+player.getH());
             //     player.setPic(new ImageIcon("assets/farmer/walkDown.gif"));
@@ -462,16 +462,16 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         }
         if (key == 65 && (screen.equals("game"))) {
             //-1
-            player.setDx(-1);
-            playerWeapPosition = "left";
+            player.setDx(-player.getSpeed());
+           // playerWeapPosition = "left";
 //            weapon.setX(player.getX()-player.getW());
 //            weapon.setY(player.getY());
             //     player.setPic(new ImageIcon("assets/farmer/walkLeft.gif"));
             //player.getPic().getImage().flush();
         }
         if (key == 68 && (screen.equals("game"))) {
-            player.setDx(1);
-            playerWeapPosition = "right";
+            player.setDx(player.getSpeed());
+            //playerWeapPosition = "right";
 //            weapon.setX(player.getX()+player.getW());
 //            weapon.setY(player.getY());
             //     player.setPic(new ImageIcon("assets/farmer/walkRight.gif"));
@@ -480,13 +480,13 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
 
         //-1
         if ((sprint) && player.getDx() == -1 && (screen.equals("game"))) {
-            player.setDx(-2);
+            player.setDx(-2+player.getSpeed()*-1);
         } else if ((sprint) && player.getDx() == 1 && (screen.equals("game"))) {
-            player.setDx(2);
+            player.setDx(2+player.getSpeed());
         } else if ((sprint) && player.getDy() == -1 && (screen.equals("game"))) {
-            player.setDy(-2);
+            player.setDy(-2+player.getSpeed()*-1);
         } else if ((sprint) && player.getDy() == 1 && (screen.equals("game"))) {
-            player.setDy(2);
+            player.setDy(2+player.getSpeed());
         }
 
 
@@ -518,14 +518,18 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
 //                farmer.setPic(new ImageIcon("assets/farmer/idleRight.png"));
         }
 
+        if (key == 16) {
+            sprint = false;
+        }
+
         if (!(sprint) && player.getDx() == -2) {
-            player.setDx(-1);
+            player.setDx(-player.getSpeed());
         } else if (!(sprint) && player.getDx() == 2) {
-            player.setDx(1);
+            player.setDx(player.getSpeed());
         } else if (!(sprint) && player.getDy() == -2) {
-            player.setDy(-1);
+            player.setDy(-player.getSpeed());
         } else if (!(sprint) && player.getDy() == 2) {
-            player.setDy(1);
+            player.setDy(player.getSpeed());
         }
 
     }
@@ -543,6 +547,21 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         // TODO Auto-generated method stub
         x = arg0.getX();
         y = arg0.getY();
+
+        if (screen.equals("game")){
+            if (x>player.getX()+player.getW()){
+                playerWeapPosition = "right";
+            }
+            else if (x<player.getX()){
+                playerWeapPosition = "left";
+            }
+            else if (y>player.getY()+player.getH()){
+                playerWeapPosition = "down";
+            }
+            else if (y<player.getY()){
+                playerWeapPosition = "up";
+            }
+        }
 
         for (Characters characters : charList) {
             if ((screen.equals("selection")) && (characters.getX() + characters.getW() >= x && characters.getX() <= x && characters.getY() + characters.getH() >= y && characters.getY() <= y)) {
