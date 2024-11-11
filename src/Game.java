@@ -3,14 +3,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.LinkedList;
 
-
-
-
 public class Game extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener {
-
 
     private BufferedImage back;
     private int key, x, y, typingIndex, screenHeight, screenWidth;
@@ -23,8 +20,8 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
     private boolean sprint;
     private ArrayList <Spells> spells;
     private Queue<Enemy> enemies;
-
-
+    private Background bg;
+    private List<Background> backgrounds;
 
     public Game() {
         new Thread(this).start();
@@ -47,7 +44,9 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         enemies = setEnemies();
         //System.out.println(enemies.size());
         playerWeapPosition = "right";
-
+        //bg = new Background(0,0,screenWidth,screenHeight);
+        backgrounds = new ArrayList<>();
+        backgrounds.add(new Background(0, 0, screenWidth, screenHeight, new ImageIcon("assets/background.jpeg")));
 
     }
 
@@ -91,6 +90,13 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
 //			}
 //		}
 //	}
+
+    public void drawBackground(Graphics g2d){
+//        bg.drawBackground(g2d);
+        for (Background background : backgrounds) {
+            background.drawBackground(g2d);
+        }
+    }
 
     public void drawScreens(Graphics g2d) {
         switch (screen) {
@@ -137,30 +143,27 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
     }
 
     public void drawGameScreen(Graphics g2d) {
+        drawBackground(g2d);
+        moveBackground();
+
         //if (!spells.isEmpty()){
         if (player.getType().equals("Mage")) {
             for (int i = 0; i < spells.size(); i++) {
                 spells.get(i).drawSpell(g2d);
-                //spells.get(i).move();
-                //spells.get(i).setX((spells.get(i).getX() + (spells.get(i).getDx()*spells.get(i).getSpeed())));
-                //spells.get(i).setY((spells.get(i).getY() + (spells.get(i).getDy()*spells.get(i).getSpeed())));
 
                 double tempX =(spells.get(i).getX() + (spells.get(i).getDx() * spells.get(i).getSpeed()));
                 double tempY =(spells.get(i).getY() + (spells.get(i).getDy() * spells.get(i).getSpeed()));
-                System.out.println(tempX + " " + tempY);
+//                System.out.println(tempX + " " + tempY);
 
                 int tempX2 = (int)tempX;
                 int tempY2 = (int)tempY;
-                System.out.println(tempX2 + " " + tempY2);
+//                System.out.println(tempX2 + " " + tempY2);
 
                 spells.get(i).setX(tempX2);
                 spells.get(i).setY(tempY2);
-
-
+            }
         }
-//            for (int i=0; i<spells.size(); i++){
-//            }
-        }
+
         if (enemies.peek()!=null) {
             if (enemies.peek().getHealth() <= 0) {
                 enemies.remove();
@@ -169,20 +172,30 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
             enemiesMove();
             g2d.drawString("Enemy Health: "+(enemies.peek().getHealth()),800,200);
         }
+
+
         g2d.drawString("Player Health: "+player.getHealth(),800,275);
         player.setW(100);
         player.setH(100);
         weapon.setWidth(100);
         weapon.setHeight(100);
 
-
-//        weapon.setX(player.getX());
-//        weapon.setY(player.getY()-player.getH()-20);
         weapon.drawWeapon(g2d);
         player.drawChar(g2d);
         setPlayerWeapPosition();
         enemiesAttack();
     }
+
+    public void moveBackground(){
+        int charX = player.getX();
+        int charY = player.getY();
+        int charW = player.getW();
+        int charH = player.getH();
+
+
+    }
+
+
 
     public void drawSelectCharacterScreen(Graphics g2d) {
         g2d.drawString("Select your character", 700, 100);
@@ -289,7 +302,8 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
 //        }
         //if (enemies.peek()==true)
         if (enemies.peek()!=null){
-            if( weapon.getX() + weapon.getWidth() >= enemies.peek().getX() && weapon.getX() <= enemies.peek().getX() + enemies.peek().getW() && weapon.getY() + weapon.getHeight() >= enemies.peek().getY() && weapon.getY() <= enemies.peek().getY() + enemies.peek().getH()){
+            if( weapon.getX() + weapon.getWidth() >= enemies.peek().getX() && weapon.getX() <= enemies.peek().getX() + enemies.peek().getW() && weapon.getY() + weapon.getHeight() >= enemies.peek().getY() && weapon.getY() <= enemies.peek().getY() + enemies.peek().getH() ||
+                    player.getX() + player.getW() >= enemies.peek().getX() && player.getX() <= enemies.peek().getX() + enemies.peek().getW() && player.getY() + player.getH() >= enemies.peek().getY() && player.getY() <= enemies.peek().getY() + enemies.peek().getH()){
                 enemies.peek().setHealth(enemies.peek().getHealth()-weapon.getDamage());
             }
         }

@@ -34,5 +34,14 @@ public class Main extends JFrame{
 		return "Juck";
 	}
 
+	public int getScreenW() {
+		return WIDTH;
+	}
+
+	public int getScreenH() {
+		return HEIGHT;
+	}
+
+
 
 }
