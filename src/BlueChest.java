@@ -6,6 +6,6 @@ public class BlueChest extends Chests{
     }
 
     public BlueChest(int x, int y) {
-        super(x, y, 50, 50, 20, new ImageIcon("assets/Chests/bluechest.png"), "Blue Chest");
+        super(x, y, 50, 50, 20, new ImageIcon("assets/Chests/bluechest.png"), "Blue Chest", new ImageIcon("assets/Chests/bluechestopen.png"));
     }
 }

@@ -1,10 +1,11 @@
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Chests {
     private int x,y,w,h,cost;
     private String type;
-    private ImageIcon pic;
+    private ImageIcon pic,openPic;
     private boolean open;
     //private ArrayList
 
@@ -17,9 +18,10 @@ public class Chests {
         pic = new ImageIcon();
         type = "";
         open = false;
+        openPic = new ImageIcon();
     }
 
-    public Chests(int xV, int yV, int width, int height, int c, ImageIcon p, String t){
+    public Chests(int xV, int yV, int width, int height, int c, ImageIcon p, String t, ImageIcon o){
         x=xV;
         y=yV;
         w=width;
@@ -28,6 +30,23 @@ public class Chests {
         pic=p;
         type=t;
         open = false;
+        openPic = o;
+    }
+
+    public void drawClosedChest(Graphics g2d){
+        g2d.drawImage(pic.getImage(),x,y,w,h,null);
+    }
+
+    public void drawOpenChest(Graphics g2d){
+        g2d.drawImage(openPic.getImage(),x,y,w,h,null);
+    }
+
+    public ImageIcon getOpenPic() {
+        return openPic;
+    }
+
+    public void setOpenPic(ImageIcon openPic) {
+        this.openPic = openPic;
     }
 
     public int getX() {

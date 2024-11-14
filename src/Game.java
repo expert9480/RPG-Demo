@@ -10,7 +10,7 @@ import java.util.LinkedList;
 public class Game extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 
     private BufferedImage back;
-    private int key, x, y, typingIndex, screenHeight, screenWidth;
+    private int key, x, y, typingIndex, screenHeight, screenWidth, totalHealth, coins;
     private double time;
     private ArrayList<Characters> charList;
     private ArrayList<Weapons> weaponList;
@@ -22,6 +22,8 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
     private Queue<Enemy> enemies;
     private Background bg;
     private List<Background> backgrounds;
+    private ArrayList<Chests> chests;
+    private List<Chests> chestList;
 
     public Game() {
         new Thread(this).start();
@@ -47,15 +49,24 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         //bg = new Background(0,0,screenWidth,screenHeight);
         backgrounds = new ArrayList<>();
         backgrounds.add(new Background(0, 0, screenWidth, screenHeight, new ImageIcon("assets/background.jpeg")));
+//        chests = new ArrayList<>();
+        coins = 0;
+//        chestList = setChestList();
 
     }
+
+//    public List<Chests> setChestList(){
+//        List<Chests> chestList = new ArrayList<>();
+//        chestList.add(new Chests(100,100,100,100,100,new ImageIcon("assets/chest.png"),"gold",new ImageIcon("assets/redChest.png")));
+//        chestList.add(new Chests(200,200,100,100,200,new ImageIcon("assets/chest.png"),"silver",new ImageIcon("assets/blueChest.png")));
+//        chestList.add(new Chests(300,300,100,100,300,new ImageIcon("assets/chest.png"),"bronze",new ImageIcon("assets/purpleChest.png")));
+//        return chestList;
+//    }
 
     public Queue<Enemy> setEnemies(){
         Queue<Enemy> temp = new LinkedList<Enemy>();
         temp.add(new Zombie(100,100));
-        temp.add(new Zombie(200,100));
-        temp.add(new Zombie(300,100));
-        temp.add(new Zombie(400,100));
+        temp.add(new Zombie(100,200));
         return temp;
     }
 
@@ -122,6 +133,9 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
             case "weaponSelect":
                 drawWeaponSelectScreen(g2d);
                 break;
+            case "instructions":
+                drawInstructionsScreen(g2d);
+                break;
             case "game":
                 //g2d.drawString("Game", 100, 100);
                 drawGameScreen(g2d);
@@ -142,9 +156,19 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         //we need to take into account width and height
     }
 
+    public void drawInstructionsScreen(Graphics g2d) {
+        g2d.drawString("Instructions", 100, 100);
+        g2d.drawString("WASD to move", 100, 200);
+        g2d.drawString("Holding Shift lets you run", 100, 300);
+        g2d.drawString("Left Click to attack", 100, 400);
+        g2d.drawString("Move your mouse around the screen to move the weapon", 100, 500);
+        g2d.drawString("Press Space to begin", 900, 100);
+    }
+
     public void drawGameScreen(Graphics g2d) {
         drawBackground(g2d);
         moveBackground();
+
 
         //if (!spells.isEmpty()){
         if (player.getType().equals("Mage")) {
@@ -167,14 +191,20 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         if (enemies.peek()!=null) {
             if (enemies.peek().getHealth() <= 0) {
                 enemies.remove();
+                coins+=enemies.peek().getCoinsDropped();
+                int randomX = (int)(Math.random() * screenWidth);
+                int randomY = (int)(Math.random() * screenHeight);
+
+                enemies.add(new Zombie(randomX,randomY));
             }
             enemies.peek().drawEnemy(g2d);
             enemiesMove();
-            g2d.drawString("Enemy Health: "+(enemies.peek().getHealth()),800,200);
+            g2d.drawString("Enemy Health: "+(enemies.peek().getHealth()),1000,50);
         }
 
 
-        g2d.drawString("Player Health: "+player.getHealth(),800,275);
+//        g2d.drawString("Player Health: "+player.getHealth(),800,275);
+        g2d.drawString("Coins: "+coins,1000,100);
         player.setW(100);
         player.setH(100);
         weapon.setWidth(100);
@@ -184,6 +214,10 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         player.drawChar(g2d);
         setPlayerWeapPosition();
         enemiesAttack();
+//        manageChests();
+//        drawChests(g2d);
+        healthBar(g2d);
+
     }
 
     public void moveBackground(){
@@ -219,6 +253,27 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         }
     }
 
+//    public void manageChests() {
+//        System.out.println(chests.size());
+//        if (chests.size() < 3) {
+//            for (int i = chests.size(); i < 3; i++) {
+//                addChest();
+//            }
+//        }
+//
+//        long openChestCount = chests.stream().filter(Chests::isOpen).count();
+//        if (openChestCount >= 3) {
+//            // Remove the first opened chest
+//            for (int i = 0; i < chests.size(); i++) {
+//                if (chests.get(i).isOpen()) {
+//                    chests.remove(i);
+//                    break;
+//                }
+//            }
+//            addChest();
+//        }
+//    }
+
     public void drawWeaponSelectScreen(Graphics g2d) {
         g2d.drawString("Select your weapon", 100, 100);
         for (int i = 0; i < weaponList.size(); i++) {
@@ -244,6 +299,65 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
             //g2d.drawString("Press space to start", 800, 700);
             g2d.drawString("Press esc to go back", 800, 750);
         }
+    }
+
+//    public void addChest(){
+//        int randomX = (int)(Math.random() * screenWidth);
+//        int randomY = (int)(Math.random() * screenHeight);
+//        int randomChestIndex = (int) (Math.random() * chestList.size());
+//
+//        Chests randomChest = chestList.get(randomChestIndex);
+//        randomChest.setX(randomX);
+//        randomChest.setY(randomY);
+//
+//        chests.add(randomChest);
+//    }
+
+//    public void addChest() {
+//        int randomChestIndex = (int) (Math.random() * chestList.size());
+//        Chests randomChest = chestList.get(randomChestIndex);
+//
+//        int randomX = (int) (Math.random() * (screenWidth - randomChest.getW()));
+//        int randomY = (int) (Math.random() * (screenHeight - randomChest.getH()));
+//
+//        randomChest.setX(randomX);
+//        randomChest.setY(randomY);
+//
+//        chests.add(randomChest);
+//    }
+
+//    public void addChest(){
+//        int ranNum = ((int) (Math.random() * 3));
+//        if (ranNum==1){
+//            chests.add(RedChest);
+//        }
+//        else if (ranNum==2){
+//
+//        }
+//        else if (ranNum==3){
+//
+//        }
+//    }
+
+//    public void drawChests(Graphics g2d) {
+//        for (Chests chest : chests) {
+//            System.out.println(chest.getX() + " " + chest.getY());
+//            if (chest.isOpen()) {
+//                System.out.println("open");
+//                chest.drawOpenChest(g2d);
+//            } else {
+//                System.out.println("closed");
+//                chest.drawClosedChest(g2d);
+//            }
+//        }
+//    }
+
+    public void healthBar(Graphics g2d){
+        g2d.drawString("Health: ", 50, 50);
+        g2d.setColor(Color.RED);
+        g2d.fillRect(200, 20, totalHealth, 30);
+        g2d.setColor(Color.GREEN);
+        g2d.fillRect(200, 20, player.getHealth(), 30);
     }
 
     public void attack(int x1, int y1, int x2, int y2){
@@ -424,6 +538,10 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
             screen = "selection";
         }
 
+        if ((key == 32) && (screen.equals("instructions"))) {
+            screen = "game";
+        }
+
         if ((key == 27) && (screen.equals("weaponSelect"))) {
             screen = "selection";
             weapon = null;
@@ -572,6 +690,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         for (Weapons weapons : weaponList) {
             if ((screen.equals("weaponSelect")) && (weapons.getX() + weapons.getWidth() >= x && weapons.getX() <= x && weapons.getY() + weapons.getHeight() >= y && weapons.getY() <= y)) {
                 weapon = weapons;
+                totalHealth = player.getHealth();
             }
         }
     }
@@ -591,7 +710,9 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         for (Weapons weapons : weaponList) {
             if ((screen.equals("weaponSelect")) && (weapon != null) && (arg0.getButton() == 1) && (weapons.getX() + weapons.getWidth() >= x && weapons.getX() <= x && weapons.getY() + weapons.getHeight() >= y && weapons.getY() <= y)) {
                 weapon = weapons;
-                screen = "game";
+                screen = "instructions";
+                player.setX(1000);
+                player.setY(600);
             }
         }
 
@@ -602,7 +723,6 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
             else {
                 meleeAttack();
             }
-
         }
 
     }

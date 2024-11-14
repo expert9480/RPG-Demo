@@ -4,7 +4,7 @@ import java.awt.*;
 
 
 public class Enemy {
-    private int w,h,speed,health,damage;
+    private int w,h,speed,health,damage, coinsDropped;
     //private int x,y;
     private double x,y,dx,dy;
     private ImageIcon pic;
@@ -24,9 +24,10 @@ public class Enemy {
         dy=0;
         pic = new ImageIcon();
         type = "";
+        coinsDropped=0;
     }
 
-    public Enemy(int xV, int yV, int width, int height, int sp, int hea, int dam, ImageIcon p, String t){
+    public Enemy(int xV, int yV, int width, int height, int sp, int hea, int dam, ImageIcon p, String t, int coins){
         x=xV;
         y=yV;
         w=width;
@@ -38,9 +39,10 @@ public class Enemy {
         dx=0;
         dy=0;
         type = t;
+        coinsDropped=coins;
     }
 
-    public Enemy(int xV, int yV, int width, int height, int sp, int hea, int dam, ImageIcon p, String t, Weapons weap){
+    public Enemy(int xV, int yV, int width, int height, int sp, int hea, int dam, ImageIcon p, String t, Weapons weap, int coins){
         x=xV;
         y=yV;
         w=width;
@@ -53,6 +55,7 @@ public class Enemy {
         dy=0;
         type = t;
         weapon = weap;
+        coinsDropped=coins;
     }
 
 //    public Enemy(int x, int y, int w, int h, int speed, int health, int damage, ImageIcon pic, String type) {
@@ -212,5 +215,13 @@ public class Enemy {
 
     public void setPic(ImageIcon pic) {
         this.pic = pic;
+    }
+
+    public int getCoinsDropped() {
+        return coinsDropped;
+    }
+
+    public void setCoinsDropped(int coinsDropped) {
+        this.coinsDropped = coinsDropped;
     }
 }
