@@ -2,15 +2,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.LinkedList;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.util.Scanner;
+import java.io.IOException;
+
 public class Game extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 
     private BufferedImage back;
-    private int key, x, y, typingIndex, screenHeight, screenWidth, totalHealth, coins;
+    private int key, x, y, typingIndex, screenHeight, screenWidth, totalHealth, coins, maxCoins, lastMaxCoins;
     private double time;
     private ArrayList<Characters> charList;
     private ArrayList<Weapons> weaponList;
@@ -24,6 +30,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
     private List<Background> backgrounds;
     private ArrayList<Chests> chests;
     private List<Chests> chestList;
+    private File saveFile;
 
     public Game() {
         new Thread(this).start();
@@ -53,6 +60,8 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         coins = 0;
 //        chestList = setChestList();
 
+        saveFile = new File("save.txt");
+        maxCoins = 0;
     }
 
 //    public List<Chests> setChestList(){
@@ -62,6 +71,53 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
 //        chestList.add(new Chests(300,300,100,100,300,new ImageIcon("assets/chest.png"),"bronze",new ImageIcon("assets/purpleChest.png")));
 //        return chestList;
 //    }
+
+    public void createFile(){
+        try {
+            if (saveFile.createNewFile()) {
+                System.out.println("File created: " + saveFile.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+        }
+        catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    public void writeToFile(){
+        try {
+            FileWriter myWriter = new FileWriter(saveFile);
+
+            //myWriter.write("Highest amount of coins collected: " + maxCoins + "\n");
+            myWriter.write((maxCoins) + "\n");
+            System.out.println(maxCoins);
+            myWriter.close();
+        }
+        catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    public void readFile() {
+        try {
+            Scanner sc = new Scanner(saveFile);
+            if (sc.hasNextInt()) {
+                lastMaxCoins = sc.nextInt();
+                if (lastMaxCoins < coins) {
+                    maxCoins = coins;
+                } else {
+                    maxCoins = lastMaxCoins;
+                }
+            }
+            sc.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
 
     public Queue<Enemy> setEnemies(){
         Queue<Enemy> temp = new LinkedList<Enemy>();
@@ -122,6 +178,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
                 } else {
                     if (System.currentTimeMillis() - time > 1000) {
                         g2d.drawString("Press space to start", 100, 600);
+                        g2d.drawString("High Score: "+ lastMaxCoins, 100, 700);
                     }
                 }
                 //typing(g2d,"Press Space to Start",100,100);
@@ -701,29 +758,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         // TODO Auto-generated method stub
         //check screen
         //(m.getButton() == 1)
-        for (Characters characters : charList) {
-            if ((screen.equals("selection")) && (arg0.getButton() == 1) && (characters.getX() + characters.getW() >= x && characters.getX() <= x && characters.getY() + characters.getH() >= y && characters.getY() <= y)) {
-                player = characters;
-                screen = "weaponSelect";
-            }
-        }
-        for (Weapons weapons : weaponList) {
-            if ((screen.equals("weaponSelect")) && (weapon != null) && (arg0.getButton() == 1) && (weapons.getX() + weapons.getWidth() >= x && weapons.getX() <= x && weapons.getY() + weapons.getHeight() >= y && weapons.getY() <= y)) {
-                weapon = weapons;
-                screen = "instructions";
-                player.setX(1000);
-                player.setY(600);
-            }
-        }
 
-        if ((screen.equals("game")) && (arg0.getButton() == 1)){
-            if(weapon instanceof SpellBooks) {
-                attack(weapon.getX()+(weapon.getWidth()/2),weapon.getY()+(weapon.getHeight()/2), x, y);
-            }
-            else {
-                meleeAttack();
-            }
-        }
 
     }
 
@@ -749,6 +784,30 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         System.out.println("you clicked at" + arg0.getY());
         x = arg0.getX();
         y = arg0.getY();
+
+        for (Characters characters : charList) {
+            if ((screen.equals("selection")) && (arg0.getButton() == 1) && (characters.getX() + characters.getW() >= x && characters.getX() <= x && characters.getY() + characters.getH() >= y && characters.getY() <= y)) {
+                player = characters;
+                screen = "weaponSelect";
+            }
+        }
+        for (Weapons weapons : weaponList) {
+            if ((screen.equals("weaponSelect")) && (weapon != null) && (arg0.getButton() == 1) && (weapons.getX() + weapons.getWidth() >= x && weapons.getX() <= x && weapons.getY() + weapons.getHeight() >= y && weapons.getY() <= y)) {
+                weapon = weapons;
+                screen = "instructions";
+                player.setX(1000);
+                player.setY(600);
+            }
+        }
+
+        if ((screen.equals("game")) && (arg0.getButton() == 1)){
+            if(weapon instanceof SpellBooks) {
+                attack(weapon.getX()+(weapon.getWidth()/2),weapon.getY()+(weapon.getHeight()/2), x, y);
+            }
+            else {
+                meleeAttack();
+            }
+        }
 
     }
 

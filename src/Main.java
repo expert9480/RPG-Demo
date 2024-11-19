@@ -12,15 +12,52 @@ public class Main extends JFrame{
 		Game play = new Game();
 		((Component) play).setFocusable(true);
 		
-		Color RoyalBlue = new Color(255, 255, 255);
-		
-		
-		setBackground(RoyalBlue);
-		
-		
+		Color color = new Color(255, 255, 255);
+
+		setBackground(color);
+
 		getContentPane().add(play);
 		
 		setVisible(true);
+		addWindowListener(new WindowListener() {
+
+			@Override
+			public void windowOpened(WindowEvent e) {
+				play.createFile();
+				play.readFile();
+
+			}
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				play.readFile();
+				play.writeToFile();
+			}
+
+			@Override
+			public void windowClosed(WindowEvent e) {
+			}
+
+			@Override
+			public void windowIconified(WindowEvent e) {
+
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+
+			}
+
+			@Override
+			public void windowActivated(WindowEvent e) {
+
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+
+			}
+		});
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 	}
