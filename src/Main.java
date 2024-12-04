@@ -7,7 +7,7 @@ public class Main extends JFrame{
 	private static final int HEIGHT=1600;
 	
 	public Main () {
-		super("RPG Demo");
+		super("Juck");
 		setSize(Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height);
 		Game play = new Game();
 		((Component) play).setFocusable(true);

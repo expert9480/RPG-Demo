@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -16,7 +15,7 @@ import java.io.IOException;
 public class Game extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 
     private BufferedImage back;
-    private int key, x, y, typingIndex, screenHeight, screenWidth, totalHealth, coins, maxCoins, lastMaxCoins;
+    private int key, x, y, typingIndex, screenHeight, screenWidth, totalHealth, coins, maxCoins, lastMaxCoins, ogHealth;
     private double time;
     private ArrayList<Characters> charList;
     private ArrayList<Weapons> weaponList;
@@ -32,6 +31,9 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
     private List<Chests> chestList;
     private File saveFile;
 
+    private long lastAttackTime;
+    private static long attackDelay;
+
     public Game() {
         new Thread(this).start();
         this.addKeyListener(this);
@@ -43,6 +45,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         charList = setCharList();
         screen = "start";
         time = System.currentTimeMillis();
+        sprint = false;
         typing = "Hello!";
         weaponList = setWeaponList();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -62,6 +65,9 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
 
         saveFile = new File("save.txt");
         maxCoins = 0;
+
+        lastAttackTime = 0;
+        attackDelay = 1000;
     }
 
 //    public List<Chests> setChestList(){
@@ -197,6 +203,47 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
                 //g2d.drawString("Game", 100, 100);
                 drawGameScreen(g2d);
                 player.move(0, 0, screenWidth, screenHeight);
+                break;
+            case "lost":
+                drawLoseScreen(g2d);
+                break;
+        }
+    }
+
+    public void drawLoseScreen(Graphics g2d) {
+        g2d.drawString("You lost", 100, 100);
+        g2d.drawString("Coins: " + coins, 100, 200);
+        g2d.drawString("High Score: " + maxCoins, 100, 300);
+        g2d.drawString("Press space to restart", 100, 400);
+    }
+
+    public void resetMethod(){
+        player.setHealth(ogHealth);
+        player = null;
+        weapon = null;
+        screen = "start";
+        coins = 0;
+        maxCoins = 0;
+        lastMaxCoins = 0;
+        spells = new ArrayList<Spells>();
+        enemies = setEnemies();
+        playerWeapPosition = "right";
+        lastAttackTime = 0;
+
+        // Reset characters' positions
+        for (int i = 0; i < charList.size(); i++) {
+            charList.get(i).setX(100);
+            charList.get(i).setY((i * 200) + 50);
+        }
+
+        // Reset weapons' positions
+        for (int i = 0; i < weaponList.size(); i++) {
+            weaponList.get(i).setX(100);
+            if (i % 2 == 0) {
+                weaponList.get(i).setY(200);
+            } else {
+                weaponList.get(i).setY(400);
+            }
         }
     }
 
@@ -256,7 +303,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
             }
             enemies.peek().drawEnemy(g2d);
             enemiesMove();
-            g2d.drawString("Enemy Health: "+(enemies.peek().getHealth()),1000,50);
+            //g2d.drawString("Enemy Health: "+(enemies.peek().getHealth()),1000,50);
         }
 
 
@@ -275,6 +322,11 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
 //        drawChests(g2d);
         healthBar(g2d);
 
+        if (player.getHealth() <= 0) {
+            screen = "lost";
+            writeToFile();
+        }
+
     }
 
     public void moveBackground(){
@@ -290,6 +342,8 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
 
     public void drawSelectCharacterScreen(Graphics g2d) {
         g2d.drawString("Select your character", 700, 100);
+        g2d.drawString("Click the icon to select!", 700, 800);
+
         for (int i = 0; i < charList.size(); i++) {
             charList.get(i).setW(150);
             charList.get(i).setH(150);
@@ -480,11 +534,21 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         }
     }
 
-    public void enemiesAttack(){
-        if (enemies.peek()!=null) {
-            if ((player.getX() >= enemies.peek().getX() && player.getX() <= enemies.peek().getX() + enemies.peek().getW() && player.getY() >= enemies.peek().getY() && player.getY() <= enemies.peek().getY() + enemies.peek().getH()) ) {
-            //&& ((System.currentTimeMillis() - time / 1000) == 1)
+//    public void enemiesAttack(){
+//        if (enemies.peek()!=null) {
+//            if ((player.getX() >= enemies.peek().getX() && player.getX() <= enemies.peek().getX() + enemies.peek().getW() && player.getY() >= enemies.peek().getY() && player.getY() <= enemies.peek().getY() + enemies.peek().getH()) && ((System.currentTimeMillis() - enemyAttackTime / 1000) >= 1)) {
+//                player.setHealth(player.getHealth() - enemies.peek().getDamage());
+//                enemyAttackTime = System.currentTimeMillis();
+//            }
+//        }
+//    }
+
+    public void enemiesAttack() {
+        if (enemies.peek() != null) {
+            long currentTime = System.currentTimeMillis();
+            if ((player.getX() >= enemies.peek().getX() && player.getX() <= enemies.peek().getX() + enemies.peek().getW() && player.getY() >= enemies.peek().getY() && player.getY() <= enemies.peek().getY() + enemies.peek().getH()) && (currentTime - lastAttackTime >= attackDelay)) {
                 player.setHealth(player.getHealth() - enemies.peek().getDamage());
+                lastAttackTime = currentTime;
             }
         }
     }
@@ -586,10 +650,9 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         key = e.getKeyCode();
         System.out.println(key);
 
-//        if ((key == 81) && (screen.equals("game"))) {
-//            //enemies.remove();
-//            attack();
-//        }
+        if (key==32 && screen.equals("lost")){
+            resetMethod();
+        }
 
         if ((key == 32) && (screen.equals("start"))) {
             screen = "selection";
@@ -603,16 +666,9 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
             screen = "selection";
             weapon = null;
             player = null;
+            ogHealth = 0;
 //			typingIndex=0;
         }
-
-//        if ((key == 10) && (screen.equals("selection"))) {
-//            screen = "weaponSelect";
-//        }
-//
-//        if ((key == 32) && (screen.equals("weaponSelect"))) {
-//            screen = "game";
-//        }
 
         if (key == 16) {
             sprint = true;
@@ -621,45 +677,33 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         if (key == 87 && (screen.equals("game"))) {
             //-1
             player.setDy(-player.getSpeed());
-           // playerWeapPosition = "up";
-//            weapon.setX(player.getX());
-//            weapon.setY(player.getY()-player.getH());
             //     player.setPic(new ImageIcon("assets/farmer/walkUp.gif"));
             //player.getPic().getImage().flush();
         }
         if (key == 83 && (screen.equals("game"))) {
             player.setDy(player.getSpeed());
-            //playerWeapPosition = "down";
-//            weapon.setX(player.getX());
-//            weapon.setY(player.getY()+player.getH());
             //     player.setPic(new ImageIcon("assets/farmer/walkDown.gif"));
             //player.getPic().getImage().flush();
         }
         if (key == 65 && (screen.equals("game"))) {
             //-1
             player.setDx(-player.getSpeed());
-           // playerWeapPosition = "left";
-//            weapon.setX(player.getX()-player.getW());
-//            weapon.setY(player.getY());
             //     player.setPic(new ImageIcon("assets/farmer/walkLeft.gif"));
             //player.getPic().getImage().flush();
         }
         if (key == 68 && (screen.equals("game"))) {
             player.setDx(player.getSpeed());
-            //playerWeapPosition = "right";
-//            weapon.setX(player.getX()+player.getW());
-//            weapon.setY(player.getY());
             //     player.setPic(new ImageIcon("assets/farmer/walkRight.gif"));
             //player.getPic().getImage().flush();
         }
 
         //-1
         if ((sprint) && player.getDx() == -1 && (screen.equals("game"))) {
-            player.setDx(-2+player.getSpeed()*-1);
+            player.setDx(-2-(player.getSpeed()));
         } else if ((sprint) && player.getDx() == 1 && (screen.equals("game"))) {
             player.setDx(2+player.getSpeed());
         } else if ((sprint) && player.getDy() == -1 && (screen.equals("game"))) {
-            player.setDy(-2+player.getSpeed()*-1);
+            player.setDy(-2-(player.getSpeed()));
         } else if ((sprint) && player.getDy() == 1 && (screen.equals("game"))) {
             player.setDy(2+player.getSpeed());
         }
@@ -672,41 +716,38 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
     @Override
     public void keyReleased(KeyEvent e) {
         key = e.getKeyCode();
-        if (key == 87) {
-            player.setDy(0);
-//            if ((player.getDX() == 0) && (player.getDY() == 0))
-//                player.setPic(new ImageIcon("assets/farmer/idleUp.png"));
+        if (screen.equals("game")) {
+            if (key == 87) {
+                player.setDy(0);
+                //            if ((player.getDX() == 0) && (player.getDY() == 0))
+                //                player.setPic(new ImageIcon("assets/farmer/idleUp.png"));
+            } else if (key == 83) {
+                player.setDy(0);
+                //            if ((farmer.getDX() == 0) && (farmer.getDY() == 0))
+                //                farmer.setPic(new ImageIcon("assets/farmer/idleDown.png"));
+            }
+            if (key == 65) {
+                player.setDx(0);
+                //            if ((farmer.getDX() == 0) && (farmer.getDY() == 0))
+                //                farmer.setPic(new ImageIcon("assets/farmer/idleLeft.png"));
+            } else if (key == 68) {
+                player.setDx(0);
+                //            if ((farmer.getDX() == 0) && (farmer.getDY() == 0))
+                //                farmer.setPic(new ImageIcon("assets/farmer/idleRight.png"));
+            }
+            if (key == 16) {
+                sprint = false;
+            }
+            if (!(sprint) && player.getDx() == -2 - (player.getSpeed())) {
+                player.setDx(-player.getSpeed());
+            } else if (!(sprint) && player.getDx() == 2 + (player.getSpeed())) {
+                player.setDx(player.getSpeed());
+            } else if (!(sprint) && player.getDy() == -2 - (player.getSpeed())) {
+                player.setDy(-player.getSpeed());
+            } else if (!(sprint) && player.getDy() == 2 + (player.getSpeed())) {
+                player.setDy(player.getSpeed());
+            }
         }
-        else if (key == 83) {
-            player.setDy(0);
-//            if ((farmer.getDX() == 0) && (farmer.getDY() == 0))
-//                farmer.setPic(new ImageIcon("assets/farmer/idleDown.png"));
-        }
-        if (key == 65) {
-            player.setDx(0);
-//            if ((farmer.getDX() == 0) && (farmer.getDY() == 0))
-//                farmer.setPic(new ImageIcon("assets/farmer/idleLeft.png"));
-        }
-        else if (key == 68) {
-            player.setDx(0);
-//            if ((farmer.getDX() == 0) && (farmer.getDY() == 0))
-//                farmer.setPic(new ImageIcon("assets/farmer/idleRight.png"));
-        }
-
-        if (key == 16) {
-            sprint = false;
-        }
-
-        if (!(sprint) && player.getDx() == -2) {
-            player.setDx(-player.getSpeed());
-        } else if (!(sprint) && player.getDx() == 2) {
-            player.setDx(player.getSpeed());
-        } else if (!(sprint) && player.getDy() == -2) {
-            player.setDy(-player.getSpeed());
-        } else if (!(sprint) && player.getDy() == 2) {
-            player.setDy(player.getSpeed());
-        }
-
     }
 
 
@@ -741,6 +782,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         for (Characters characters : charList) {
             if ((screen.equals("selection")) && (characters.getX() + characters.getW() >= x && characters.getX() <= x && characters.getY() + characters.getH() >= y && characters.getY() <= y)) {
                 player = characters;
+                ogHealth = player.getHealth();
             }
         }
 
@@ -788,6 +830,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         for (Characters characters : charList) {
             if ((screen.equals("selection")) && (arg0.getButton() == 1) && (characters.getX() + characters.getW() >= x && characters.getX() <= x && characters.getY() + characters.getH() >= y && characters.getY() <= y)) {
                 player = characters;
+                ogHealth = player.getHealth();
                 screen = "weaponSelect";
             }
         }
