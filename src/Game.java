@@ -185,54 +185,55 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         }
     }
 
-    public void drawLoseScreen(Graphics g2d) {
-        g2d.drawString("You lost", 100, 100);
-        g2d.drawString("Coins: " + coins, 100, 200);
-        g2d.drawString("High Score: " + maxCoins, 100, 300);
-        g2d.drawString("Press space to restart", 100, 400);
-    }
-
-    public void resetMethod(){
-        player.setHealth(ogHealth);
-        player = null;
-        weapon = null;
-        screen = "start";
-        coins = 0;
-        maxCoins = 0;
-        lastMaxCoins = 0;
-        spells = new ArrayList<Spells>();
-        enemies = setEnemies();
-        playerWeapPosition = "right";
-        lastAttackTime = 0;
+    public void drawSelectCharacterScreen(Graphics g2d) {
+        g2d.drawString("Select your character", 700, 100);
+        g2d.drawString("Click the icon to select!", 700, 800);
 
         for (int i = 0; i < charList.size(); i++) {
-            charList.get(i).setX(100);
+            charList.get(i).setW(150);
+            charList.get(i).setH(150);
             charList.get(i).setY((i * 200) + 50);
+            charList.get(i).drawChar(g2d, charList.get(i).getIdleDown());
+            g2d.drawString(charList.get(i).getType(), 100 + (charList.get(i).getX() + 100), charList.get(i).getY() + (charList.get(i).getH() / 2));
         }
 
-        for (int i = 0; i < weaponList.size(); i++) {
-            weaponList.get(i).setX(100);
-            if (i % 2 == 0) {
-                weaponList.get(i).setY(200);
-            } else {
-                weaponList.get(i).setY(400);
-            }
+        if (player != null) {
+            g2d.drawString("You picked " + player.getType(), 800, 200);
+            g2d.drawString("Health: " + player.getHealth(), 800, 250);
+            g2d.drawString("Speed: " + player.getSpeed(), 800, 300);
+            if (player.getMana() != 0)
+                g2d.drawString("Mana: " + player.getMana(), 800, 350);
+            //g2d.drawString("Stamina: " + player.getStam(), 800, 350);
+            //g2d.drawString("Press enter to continue", 800, 700);
+            g2d.drawString("Press esc to go back", 800, 750);
         }
     }
 
-    public Boolean collision(int x1, int y1, int x2, int y2){
-        //x1 and y1 are the coordinates of the object
-        //x2 and y2 are the coordinates of the background object or picture or enemy
-        if (x1 > x2 && x1 < x2 + 50 && y1 > y2 && y1 < y2 + 50){
-            return true;
+    public void drawWeaponSelectScreen(Graphics g2d) {
+        g2d.drawString("Select your weapon", 100, 100);
+        for (int i = 0; i < weaponList.size(); i++) {
+            if (weaponList.get(i).getCharacter().equals(player.getType())) {
+                weaponList.get(i).setWidth(150);
+                weaponList.get(i).setHeight(150);
+                if (i % 2 == 0)
+                    weaponList.get(i).setY(200);
+                else
+                    weaponList.get(i).setY(400);
+                weaponList.get(i).drawWeapon(g2d);
+                g2d.drawString((i + 1) + ": " + weaponList.get(i).getType(), 100 + (weaponList.get(i).getX() + 100), weaponList.get(i).getY() + (weaponList.get(i).getHeight() / 2));
+            }
         }
-        else
-            return false;
 
-        //what if we change the inputs the be the actual thing instead of numbers
-        //we need to take into account width and height
-
-        // 12/3/24 - ehh maybe later, a problem for future me
+        if (weapon != null) {
+            g2d.drawString("You picked " + weapon.getType(), 800, 200);
+            g2d.drawString("Damage: " + weapon.getDamage(), 800, 250);
+            g2d.drawString("Range: " + weapon.getRange(), 800, 300);
+            g2d.drawString("Speed: " + weapon.getSpeed(), 800, 350);
+            if (weapon.getMana() != 0)
+                g2d.drawString("Mana: " + weapon.getMana(), 800, 400);
+            //g2d.drawString("Press space to start", 800, 700);
+            g2d.drawString("Press esc to go back", 800, 750);
+        }
     }
 
     public void drawInstructionsScreen(Graphics g2d) {
@@ -286,56 +287,55 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         }
     }
 
-    public void drawSelectCharacterScreen(Graphics g2d) {
-        g2d.drawString("Select your character", 700, 100);
-        g2d.drawString("Click the icon to select!", 700, 800);
+    public void drawLoseScreen(Graphics g2d) {
+        g2d.drawString("You lost", 100, 100);
+        g2d.drawString("Coins: " + coins, 100, 200);
+        g2d.drawString("High Score: " + maxCoins, 100, 300);
+        g2d.drawString("Press space to restart", 100, 400);
+    }
+
+    public void resetMethod(){
+        player.setHealth(ogHealth);
+        player = null;
+        weapon = null;
+        screen = "start";
+        coins = 0;
+        maxCoins = 0;
+        lastMaxCoins = 0;
+        spells = new ArrayList<Spells>();
+        enemies = setEnemies();
+        playerWeapPosition = "right";
+        lastAttackTime = 0;
 
         for (int i = 0; i < charList.size(); i++) {
-            charList.get(i).setW(150);
-            charList.get(i).setH(150);
+            charList.get(i).setX(100);
             charList.get(i).setY((i * 200) + 50);
-            charList.get(i).drawChar(g2d);
-            g2d.drawString(charList.get(i).getType(), 100 + (charList.get(i).getX() + 100), charList.get(i).getY() + (charList.get(i).getH() / 2));
         }
 
-        if (player != null) {
-            g2d.drawString("You picked " + player.getType(), 800, 200);
-            g2d.drawString("Health: " + player.getHealth(), 800, 250);
-            g2d.drawString("Speed: " + player.getSpeed(), 800, 300);
-            if (player.getMana() != 0)
-                g2d.drawString("Mana: " + player.getMana(), 800, 350);
-            //g2d.drawString("Stamina: " + player.getStam(), 800, 350);
-            //g2d.drawString("Press enter to continue", 800, 700);
-            g2d.drawString("Press esc to go back", 800, 750);
-        }
-    }
-
-    public void drawWeaponSelectScreen(Graphics g2d) {
-        g2d.drawString("Select your weapon", 100, 100);
         for (int i = 0; i < weaponList.size(); i++) {
-            if (weaponList.get(i).getCharacter().equals(player.getType())) {
-                weaponList.get(i).setWidth(150);
-                weaponList.get(i).setHeight(150);
-                if (i % 2 == 0)
-                    weaponList.get(i).setY(200);
-                else
-                    weaponList.get(i).setY(400);
-                weaponList.get(i).drawWeapon(g2d);
-                g2d.drawString((i + 1) + ": " + weaponList.get(i).getType(), 100 + (weaponList.get(i).getX() + 100), weaponList.get(i).getY() + (weaponList.get(i).getHeight() / 2));
+            weaponList.get(i).setX(100);
+            if (i % 2 == 0) {
+                weaponList.get(i).setY(200);
+            } else {
+                weaponList.get(i).setY(400);
             }
         }
-
-        if (weapon != null) {
-            g2d.drawString("You picked " + weapon.getType(), 800, 200);
-            g2d.drawString("Damage: " + weapon.getDamage(), 800, 250);
-            g2d.drawString("Range: " + weapon.getRange(), 800, 300);
-            g2d.drawString("Speed: " + weapon.getSpeed(), 800, 350);
-            if (weapon.getMana() != 0)
-                g2d.drawString("Mana: " + weapon.getMana(), 800, 400);
-            //g2d.drawString("Press space to start", 800, 700);
-            g2d.drawString("Press esc to go back", 800, 750);
-        }
     }
+
+//    public Boolean collision(int x1, int y1, int x2, int y2){
+//        //x1 and y1 are the coordinates of the object
+//        //x2 and y2 are the coordinates of the background object or picture or enemy
+//        if (x1 > x2 && x1 < x2 + 50 && y1 > y2 && y1 < y2 + 50){
+//            return true;
+//        }
+//        else
+//            return false;
+//
+//        //what if we change the inputs the be the actual thing instead of numbers
+//        //we need to take into account width and height
+//
+//        // 12/3/24 - ehh maybe later, a problem for future me
+//    }
 
     public void healthBar(Graphics g2d){
         g2d.drawString("Health: ", 50, 50);
@@ -439,8 +439,6 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         //}
     }
 
-
-
     public void run() {
         try {
             while (true) {
@@ -490,6 +488,7 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         }
 
         if ((key == 32) && (screen.equals("instructions"))) {
+            player.setPic(player.getIdleDown());
             screen = "game";
         }
 
@@ -507,24 +506,21 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         if (key == 87 && (screen.equals("game"))) {
             //-1
             player.setDy(-player.getSpeed());
-            //     player.setPic(new ImageIcon("assets/farmer/walkUp.gif"));
-            //player.getPic().getImage().flush();
+            player.setPic(player.getMoveUp());
+//            player.getPic().getImage().flush();
         }
         if (key == 83 && (screen.equals("game"))) {
             player.setDy(player.getSpeed());
-            //     player.setPic(new ImageIcon("assets/farmer/walkDown.gif"));
-            //player.getPic().getImage().flush();
+            player.setPic(player.getMoveDown());
         }
         if (key == 65 && (screen.equals("game"))) {
             //-1
             player.setDx(-player.getSpeed());
-            //     player.setPic(new ImageIcon("assets/farmer/walkLeft.gif"));
-            //player.getPic().getImage().flush();
+            player.setPic(player.getMoveLeft());
         }
         if (key == 68 && (screen.equals("game"))) {
             player.setDx(player.getSpeed());
-            //     player.setPic(new ImageIcon("assets/farmer/walkRight.gif"));
-            //player.getPic().getImage().flush();
+            player.setPic(player.getMoveRight());
         }
 
         //-1
@@ -549,21 +545,21 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         if (screen.equals("game")) {
             if (key == 87) {
                 player.setDy(0);
-                //            if ((player.getDX() == 0) && (player.getDY() == 0))
-                //                player.setPic(new ImageIcon("assets/farmer/idleUp.png"));
+                            if ((player.getDx() == 0) && (player.getDy() == 0))
+                                player.setPic(player.getIdleUp());
             } else if (key == 83) {
                 player.setDy(0);
-                //            if ((farmer.getDX() == 0) && (farmer.getDY() == 0))
-                //                farmer.setPic(new ImageIcon("assets/farmer/idleDown.png"));
+                            if ((player.getDx() == 0) && (player.getDy() == 0))
+                                player.setPic(player.getIdleDown());
             }
             if (key == 65) {
                 player.setDx(0);
-                //            if ((farmer.getDX() == 0) && (farmer.getDY() == 0))
-                //                farmer.setPic(new ImageIcon("assets/farmer/idleLeft.png"));
+                            if ((player.getDx() == 0) && (player.getDy() == 0))
+                                player.setPic(player.getIdleLeft());
             } else if (key == 68) {
                 player.setDx(0);
-                //            if ((farmer.getDX() == 0) && (farmer.getDY() == 0))
-                //                farmer.setPic(new ImageIcon("assets/farmer/idleRight.png"));
+                            if ((player.getDx() == 0) && (player.getDy() == 0))
+                                player.setPic(player.getIdleRight());
             }
             if (key == 16) {
                 sprint = false;
