@@ -4,8 +4,6 @@ import java.awt.*;
 
 public class Weapons {
 
-    //add a new constructor for spell books
-
     private int x,y,width,height, damage, range, speed, mana;
     private String type, character;
     private ImageIcon pic;

@@ -58,31 +58,6 @@ public class Enemy {
         coinsDropped=coins;
     }
 
-//    public Enemy(int x, int y, int w, int h, int speed, int health, int damage, ImageIcon pic, String type) {
-//        this.x = x;
-//        this.y = y;
-//        this.w = w;
-//        this.h = h;
-//        this.speed = speed;
-//        this.health = health;
-//        this.damage = damage;
-//        this.pic = pic;
-//        this.type = type;
-//    }
-
-//    public Enemy(int x, int y, int h, int w, int speed, int health, int damage, ImageIcon pic, String type, Weapons weapon) {
-//        this.x = x;
-//        this.y = y;
-//        this.h = h;
-//        this.w = w;
-//        this.speed = speed;
-//        this.health = health;
-//        this.damage = damage;
-//        this.pic = pic;
-//        this.type = type;
-//        this.weapon = weapon;
-//    }
-
     public void move(int screenW, int screenH, int maxW, int maxH) {
         //fix move method
         x+=dx;

@@ -322,21 +322,6 @@ public class Game extends JPanel implements Runnable, KeyListener, MouseListener
         }
     }
 
-//    public Boolean collision(int x1, int y1, int x2, int y2){
-//        //x1 and y1 are the coordinates of the object
-//        //x2 and y2 are the coordinates of the background object or picture or enemy
-//        if (x1 > x2 && x1 < x2 + 50 && y1 > y2 && y1 < y2 + 50){
-//            return true;
-//        }
-//        else
-//            return false;
-//
-//        //what if we change the inputs the be the actual thing instead of numbers
-//        //we need to take into account width and height
-//
-//        // 12/3/24 - ehh maybe later, a problem for future me
-//    }
-
     public void healthBar(Graphics g2d){
         g2d.drawString("Health: ", 50, 50);
         g2d.setColor(Color.RED);

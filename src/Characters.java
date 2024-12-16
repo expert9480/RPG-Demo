@@ -33,20 +33,6 @@ public class Characters {
         idleRight = new ImageIcon();
     }
 
-    public Characters(int xV, int yV, int width, int height, int sp, int hea, int dam, ImageIcon p, String t){
-        x=xV;
-        y=yV;
-        w=width;
-        h=height;
-        speed=sp;
-        health=hea;
-        damage=dam;
-        pic=p;
-        dx=0;
-        dy=0;
-        type = t;
-    }
-
     public Characters(int xV, int yV, int width, int height, int sp, int hea, int dam, ImageIcon p, String t, ImageIcon moveUp, ImageIcon moveDown, ImageIcon moveLeft, ImageIcon moveRight, ImageIcon idleUp, ImageIcon idleDown, ImageIcon idleLeft, ImageIcon idleRight){
         x=xV;
         y=yV;
@@ -82,19 +68,6 @@ public class Characters {
         weapon = weap;
     }
 
-    public Characters(int x, int y, int w, int h, int speed, int health, int damage, int mana, ImageIcon pic, String type) {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-        this.speed = speed;
-        this.health = health;
-        this.damage = damage;
-        this.mana = mana;
-        this.pic = pic;
-        this.type = type;
-    }
-
     public Characters(int x, int y, int w, int h, int speed, int health, int damage, int mana, ImageIcon pic, String type, ImageIcon moveUp, ImageIcon moveDown, ImageIcon moveLeft, ImageIcon moveRight, ImageIcon idleUp, ImageIcon idleDown, ImageIcon idleLeft, ImageIcon idleRight) {
         this.x = x;
         this.y = y;
@@ -116,20 +89,6 @@ public class Characters {
         this.idleRight = idleRight;
 
     }
-
-//    public Characters(int x, int y, int h, int w, int speed, int health, int damage, int mana, ImageIcon pic, String type, Weapons weapon) {
-//        this.x = x;
-//        this.y = y;
-//        this.h = h;
-//        this.w = w;
-//        this.speed = speed;
-//        this.health = health;
-//        this.damage = damage;
-//        this.mana = mana;
-//        this.pic = pic;
-//        this.type = type;
-//        this.weapon = weapon;
-//    }
 
     public void move(int screenW, int screenH, int maxW, int maxH) {
         //fix move method
@@ -180,10 +139,6 @@ public class Characters {
     public void drawChar(Graphics g2d, ImageIcon p){
         g2d.drawImage(p.getImage(),(int)x,(int)y,w,h,null);
     }
-
-//    public void drawDoubleChar(Graphics g2d){
-//        g2d.drawImage(pic.getImage(),(int)doubleX,(int)doubleY,w,h,null);
-//    }
 
     public double getDoubleX() {
         return x;
